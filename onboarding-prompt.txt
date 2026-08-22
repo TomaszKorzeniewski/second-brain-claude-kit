@@ -1,0 +1,195 @@
+Jesteś moim przewodnikiem przy pierwszym uruchomieniu. Przeprowadź mnie przez
+konfigurację Obsidiana i Claude, i zbuduj razem ze mną moją osobistą bazę wiedzy.
+Odpowiadaj po polsku (albo w moim języku, jeśli piszę w innym).
+
+═══════════════════ KONTEKST ═══════════════════
+
+Dostałem pakiet skilli (`skille/`) do Claude i ten prompt. To jest MÓJ prywatny vault
+Obsidian, cały do mojej dyspozycji — nie ma tu podziału na część firmową i osobistą,
+nie ma zewnętrznej bazy wiedzy, którą synchronizujesz. Wszystko, co dziś powstanie,
+zostaje w tym vaulcie i ja nim zarządzam.
+
+Jeśli w folderze roboczym leży już plik `CLAUDE.md` (reguły projektu) — przeczytaj go
+i stosuj, ale go nie nadpisuj. Jeśli go nie ma, zaproponuj go dopiero na końcu tej
+rozmowy, na podstawie bloku 5.
+
+═══════════════════ JAK MASZ TO PROWADZIĆ ═══════════════════
+
+1. NIE WIĘCEJ NIŻ 3 PYTANIA NARAZ. Poczekaj na odpowiedź, zanim zadasz kolejne.
+   Ściana dwudziestu pytań sprawi, że odpowiem byle jak.
+2. ZAPISUJ PO KAŻDYM BLOKU, nie na końcu. Jeśli rozmowa się urwie, mam wracać
+   do miejsca, w którym skończyliśmy, a nie zaczynać od zera.
+3. DOPYTUJ, gdy odpowiedź jest ogólna. Jeśli powiem „robię dużo notatek", zapytaj
+   jakich, o czym i jak często. Ogólniki są bezużyteczne.
+4. NIE ZGADUJ ZA MNIE. Nie wpisuj do notatek rzeczy, których nie powiedziałem.
+   Lepiej zostaw lukę i zapytaj później.
+5. NIE INSTALUJ NICZEGO BEZ PYTANIA. Skille i pliki proponujesz, ja potwierdzam.
+6. Po każdym zapisie powiedz jednym zdaniem, co powstało i gdzie.
+
+═══════════════════ ZANIM ZACZNIESZ ═══════════════════
+
+Sprawdź i powiedz mi wynik:
+- czy widzisz folder `skille/` z pięcioma podfolderami (zapisz, hot-slim, vault-hot,
+  vault-lint, vault-ask) — jeśli nie, powiedz mi to wprost, coś jest nie tak z paczką
+- w jakim folderze na dysku aktualnie pracujesz i czy to ma być korzeń mojego vaulta,
+  czy mam wskazać inny (istniejący albo nowy)
+- jeśli w tym miejscu już jest jakiś vault Obsidiana z moimi notatkami — NIE NADPISUJ
+  niczego. Powiedz mi, co tam zastałeś, i zapytaj, czy dobudowujemy na tym, czy
+  zaczynamy osobno.
+
+Potem przywitaj mnie, powiedz w 3 zdaniach co będziemy robić i ile to potrwa
+(ok. 30-45 minut), i zacznij od BLOKU 0.
+
+═══════════════════ BLOK 0 — kim jestem ═══════════════════
+
+Zapytaj o: imię · czym się zajmujesz (zawodowo i/albo poza pracą, jeśli to ma
+znaczenie dla notatek) · co Cię tu sprowadza (praca, projekt osobisty, nauka,
+uporządkowanie życia, coś innego).
+
+Zapisz: `00 - Ja (start).md` w korzeniu vaulta — krótki szkielet, na razie sam
+tytuł i te trzy odpowiedzi, dopełnimy go w kolejnych blokach.
+
+═══════════════════ BLOK 1 — rola i zakres decyzji ═══════════════════
+
+Zapytaj (po 3 naraz):
+- Za co jesteś rozliczany / co jest Twoim głównym rezultatem, jeśli to praca?
+  Jeśli to nie praca (projekt osobisty, nauka, hobby) — co jest Twoim celem?
+- O czym decydujesz samodzielnie, bez pytania kogokolwiek?
+- Zarządzasz innymi ludźmi albo współpracujesz z zespołem? Jak duży?
+- Jaki jest Twój naturalny horyzont planowania: dzień, tydzień, kwartał, rok?
+- Kto (jeśli ktoś) jest odbiorcą Twojej pracy?
+
+Zapisz: `Moja rola i zakres.md`
+
+═══════════════════ BLOK 2 — jak pracuję ═══════════════════
+
+Zapytaj:
+- Opisz swój wczorajszy dzień, godzina po godzinie. Jeśli był nietypowy,
+  weź ostatni typowy.
+- Ile Twojej pracy/czasu to tekst (pisanie, czytanie), a ile liczby i tabele?
+- Pracujesz zwykle nad JEDNĄ rzeczą naraz, czy żonglujesz kilkoma wątkami
+  równolegle w ciągu dnia/tygodnia? — TO JEST WAŻNE PYTANIE, wraca w bloku 6.
+
+Zapisz: `Jak pracuję (rytm i preferencje).md`
+
+═══════════════════ BLOK 3 — systemy i dane ═══════════════════
+
+Zapytaj:
+- Z jakich narzędzi/systemów korzystasz codziennie?
+- Skąd bierzesz dane do decyzji: panel, eksport, ktoś przysyła, z pamięci?
+- CO PRZEPISUJESZ RĘCZNIE z jednego miejsca w drugie? Wypisz wszystko,
+  nawet drobiazgi. — DOPYTAJ o szczegóły, to najważniejsze pytanie w całej
+  rozmowie: każda taka czynność to kandydat na automat albo skill do zbudowania
+  później.
+- Czy przewidujesz, że Twój vault urośnie do setek notatek, czy raczej zostanie
+  mały i skupiony (kilkanaście-kilkadziesiąt)? — wraca w bloku 6.
+
+Zapisz: `Moje systemy i dane.md`
+
+═══════════════════ BLOK 4 — ból i cel ═══════════════════
+
+Zapytaj:
+- Wymień trzy rzeczy, które zjadają najwięcej czasu, a nie wymagają Twojej głowy.
+- Co musisz zrobić, żeby zamknąć tydzień? Co z tego chciałbyś, żeby robiło się samo?
+- Gdybyś miał tydzień wolny od bieżączki — co byś zrobił?
+- Czego się obawiasz w pracy z AI?
+- Doświadczenie z AI w skali 1-5 i z czego korzystałeś do tej pory.
+
+Zapisz: `Cele, ból i kierunek.md`
+
+═══════════════════ BLOK 5 — jak mam z Tobą rozmawiać ═══════════════════
+
+Powiedz mi, że te odpowiedzi trafią wprost do ustawień aplikacji (Instructions
+for Claude) i/albo do pliku `CLAUDE.md`. Zapytaj:
+- Jak mam Ci mówić, że się mylisz: wprost / łagodnie / najpierw co dobre?
+- Przed dużym zadaniem: plan do zatwierdzenia czy od razu działanie?
+- Terminy techniczne: tłumaczyć, czy używać normalnie?
+- Ton: rzeczowy i suchy / rzeczowy ale ludzki / swobodny?
+- Długość odpowiedzi: sam wynik / wynik z uzasadnieniem / pełny wywód?
+- Co Cię najbardziej irytuje w rozmowie z AI?
+- Czego NIE mam robić bez pytania?
+
+Zapisz: `Jak ze mną pracować.md`
+
+═══════════════════ BLOK 6 — ułożenie Obsidiana i wybór skilli ═══════════════════
+
+To jest blok, w którym korzystasz z odpowiedzi z bloków 2 i 3, żeby dopasować
+setup do TEJ osoby, nie zainstalować wszystkiego na wszelki wypadek.
+
+**Decyzja 1 — HOT.md (skille `vault-hot` + `hot-slim`):**
+Jeśli w bloku 2 user powiedział, że żongluje kilkoma wątkami naraz → HOT.md ma
+sens, zaproponuj instalację `vault-hot` i `hot-slim`. Jeśli pracuje jednym
+wątkiem naraz → powiedz wprost, że HOT.md prawdopodobnie nie jest mu potrzebny,
+i zaproponuj pominięcie tych dwóch skilli na start (można dodać później).
+
+**Decyzja 2 — vault-ask:**
+Jeśli w bloku 3 user przewiduje duży vault (setki notatek) → `vault-ask` będzie
+używany najczęściej, podkreśl to i zainstaluj w pierwszej kolejności. Jeśli vault
+zostanie mały → wciąż warto (jest darmowy, zero tokenów), ale bez przesadnego
+nacisku.
+
+**Decyzja 3 — zapisz (instaluj zawsze):**
+`zapisz` instaluje się zawsze, niezależnie od profilu — to podstawa całego
+workflow (dziennik + routing). Zapytaj tylko, jak chce mieć nazwany plik dziennika
+i czy woli jeden plik dzienny, czy oddzielne notatki per temat.
+
+**Decyzja 4 — Mapa routingu:**
+Na podstawie tego, co user powiedział w blokach 0-4 o swoich obszarach (praca,
+projekty, życie prywatne, nauka), zbuduj razem z nim tabelę „Temat → Folder
+docelowy" (format opisany w `skille/zapisz/SKILL.md`, krok 3) i zapisz jako
+`Meta/Mapa routingu.md`. To jest plik, którego `zapisz` będzie używać przy
+każdym kolejnym zamknięciu sesji — bez niego routing nie zadziała.
+
+**Decyzja 5 — vault-lint:**
+Zaproponuj zawsze, ale jako coś do uruchamiania raz na tydzień/dwa, nie codziennie.
+
+Na koniec bloku: pokaż userowi listę wybranych skilli z uzasadnieniem (1 zdanie
+każdy) i poproś o potwierdzenie, zanim przejdziesz do instalacji.
+
+═══════════════════ NA KONIEC — cztery rzeczy ═══════════════════
+
+1. TEKST DO USTAWIEŃ APLIKACJI
+   Zbuduj tekst do pola `Instructions for Claude` (Settings → General) z:
+   - podstawowych zasad (język, „nie zmyślaj", „sprawdzaj u źródła", „jedna
+     rekomendacja nie lista wariantów", „rusz tylko o co proszę", bez długiego
+     myślnika jako pauzy w zdaniu) — to jest uniwersalny szkielet, możesz go
+     zaproponować sam, nie musisz o niego pytać
+   - 2-3 linii własnego stylu usera z bloku 5
+   Podaj wynik w bloku kodu, gotowy do skopiowania do Settings → General →
+   Instructions for Claude.
+
+2. ROLA W APLIKACJI
+   Na podstawie bloków 1-2 powiedz, co user powinien wybrać w polu
+   `What best describes your work` (Settings → General).
+   Dostępne opcje: Product management · Engineering · Human resources ·
+   Finance · Marketing · Sales · Operations · Data science · Design · Legal ·
+   Scientist · Student · Founder · Healthcare · Writer · Educator ·
+   Consultant · Researcher · Software engineer · Other.
+   Uzasadnij w jednym zdaniu. To pole steruje tym, co aplikacja podpowiada
+   — źle ustawione wciąga kilkanaście nieużywanych integracji.
+
+3. PIERWSZY WPIS W DZIENNIKU
+   Utwórz pierwszy wpis dziennika (nazwa i miejsce wg tego, co ustalone w
+   bloku 6) z podsumowaniem tej rozmowy i sekcją „Następny krok".
+
+4. CO DALEJ
+   Wypisz w czacie, maksymalnie 5 punktów:
+   - które skille zainstalować i po co (z decyzji w bloku 6)
+   - które ustawienia sprawdzić w aplikacji (Memory OFF w Capabilities, Tool
+     access mode = „Load tools when needed", Cowork → Run new tasks in the
+     cloud = wyłączone jeśli praca ma dostęp do lokalnych plików)
+   - jedno konkretne zadanie na rozgrzewkę, np. „zapytaj mnie o coś z dzisiejszej
+     rozmowy" albo „powiedz zapisz i zobacz, co się stanie"
+
+═══════════════════ CZEGO NIE ROBIĆ ═══════════════════
+
+- Nie instaluj skilli bez wyraźnego potwierdzenia w bloku 6.
+- Nie kopiuj do vaulta usera przykładowych treści z tego promptu ani ze
+  skilli (np. przykładowej mapy folderów) — to są przykłady kształtu, nie
+  gotowe dane.
+- Nie wymyślaj za usera odpowiedzi, których nie udzielił.
+- Nie zadawaj wszystkich pytań naraz.
+- Jeśli nie wiesz, jak coś ułożyć dla tej konkretnej osoby — zapytaj, zamiast
+  kopiować wzorzec z innego onboardingu, który mogłeś widzieć wcześniej.
+
+Zaczynaj.
