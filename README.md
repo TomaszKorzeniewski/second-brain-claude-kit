@@ -23,7 +23,7 @@ pyta Cię o to na wstępie i dopasowuje resztę.
 ```
 skille/
   zapisz/         zamknięcie sesji: dziennik + routing notatek do właściwych miejsc
-  vault-ask/       lokalne wyszukiwanie po vaulcie (BM25, zero tokenów, zero API)
+  vault-ask/       lokalne wyszukiwanie po vaulcie (BM25 ze stemmingiem polskim, zero tokenów, zero API)
   vault-hot/       szybki powrót do kontekstu na starcie sesji, bez recapu
   hot-slim/        kontrola budżetu pliku HOT.md, żeby nie spuchł bez kontroli
   vault-lint/      cotygodniowa higiena vaulta: martwe linki, sieroty, sprzeczności
