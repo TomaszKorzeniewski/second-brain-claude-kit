@@ -1,41 +1,68 @@
 ---
 name: vault-ask
-description: "Lokalne wyszukiwanie po vaulcie Obsidian (BM25, bez modeli AI, bez tokenów). Użyj gdy trzeba znaleźć w vaulcie informacje na temat zamiast wczytywać całe pliki. Zwraca trafne fragmenty z cytatami (plik + nagłówek). Triggery: \"co wiemy o\", \"znajdź w vaulcie\", \"ask\", \"przeszukaj notatki\"."
+description: "Lokalne wyszukiwanie po vaulcie Obsidian (BM25 ze stemmingiem polskim, bez modeli AI, bez tokenów). Użyj gdy trzeba znaleźć w vaulcie informacje na temat zamiast wczytywać całe pliki. Zwraca trafne fragmenty z cytatami (plik + nagłówek). Triggery: \"co wiemy o\", \"znajdź w vaulcie\", \"ask\", \"przeszukaj notatki\"."
 ---
 
-# vault-ask — tanie wyszukiwanie po vaulcie (BM25)
+# vault-ask: tanie wyszukiwanie po vaulcie (BM25)
 
 Samodzielny skill: cały kod jest w tym pliku. Bez zależności (stdlib Pythona), bez tokenów.
 
-> Auto-detekcja vaulta szuka folderu, którego nazwa ZAWIERA „obsidian" (nie musi być dokładnie
-> „Obsidian" — pasuje np. „Jan w Obsidian", „MójDrugiMózg-Obsidian"). Jeśli Twój vault nazywa
-> się inaczej, podawaj `--vault` jawnie.
+## Jak uruchomić (dla Claude)
+1. Jeśli plik `bm25_pl.py` nie istnieje w katalogu roboczym sesji, zapisz go z bloku „Skrypt" poniżej.
+2. Uruchom: `python3 bm25_pl.py "<pytanie>" --top 8` (vault wykrywa się sam po folderze zawierającym „obsidian" w nazwie; w razie potrzeby `--vault <ścieżka>` albo zmienna `VAULT_DIR`).
+3. **W Cowork katalog roboczy bash to folder outputs, nie vault.** Auto-detekcja działa tylko gdy skrypt stoi wewnątrz drzewa vaulta. Podaj `--vault` ze ścieżką zamapowaną w bash (patrz system reminder „Shell access" na starcie sesji) — zwykle `/sessions/<id>/mnt/Documents/<nazwa Twojego vaulta>`.
+4. Zwróć użytkownikowi wynik z cytatami (plik › nagłówek). Najpierw vault-ask, dopiero potem ewentualnie doczytaj pełne pliki, bo to oszczędza tokeny.
 
-## Co robi inaczej niż zwykły BM25
+Flagi: `--top N`, `--module firma|persona` (granica Persona/Firma, użyj jeśli masz taki podział w vaulcie), `--full`.
+
+## Co ta wersja robi inaczej niż zwykły BM25
 
 1. **Stemming polski bez słownika.** Indeksowane są rdzenie, nie formy, więc `notatka`,
    `notatki` i `notatkach` trafiają w to samo. Normalizowane są też oboczności spółgłoskowe
    z miejscownika: `projekcie` sprowadza się do `projekt`, `vaulcie` do `vault`.
-2. **Foldery mają wagi** (`WAGI_FOLDEROW`). Dziennik i inbox to zwykle największa objętość
-   tekstu w vaulcie i potrafią zalać wyniki, spychając notatki docelowe. Nie są wykluczone,
-   tylko obniżone. Dopasuj nazwy folderów do swojego układu.
-3. **Kwarantanna jest wykluczona** (`SKIP_DIRS`). Materiał odłożony do skasowania nie ma
-   prawa wyjść jako źródło prawdy.
+2. **Kopie zapasowe i kwarantanna są poza indeksem** (`SKIP_DIRS`). Materiał odłożony do
+   skasowania albo kopia sprzed zmiany nie mają prawa wyjść jako źródło prawdy.
+3. **Foldery mają wagi** (`WAGI_FOLDEROW`), dopasowywane po KAŻDYM segmencie ścieżki, nie
+   tylko po pierwszym. Dziennik i Hot leżą pod `Persona/`, więc dopasowanie po pierwszym
+   segmencie w ogóle by ich nie złapało. Nie są wykluczone, tylko obniżone.
 4. **Nazwa pliku i nagłówek sekcji podbijają wynik** (`BOOST_NAGLOWKA`), bo trafienie
    w tytuł jest mocniejszym sygnałem niż to samo słowo w środku akapitu.
 
-Zmierzone na 12 zapytaniach kontrolnych w vaulcie z 327 notatek: trafienie w top 3 wzrosło
-z 4/12 do 10/12, MRR z 0,271 do 0,725, a odmiana słowa przestała zmieniać wynik
-(0 na 8 grup kontrolnych przed zmianą, 8 na 8 po).
+## Zmierzone na tym vaulcie (2026-08-27, 16 zapytań kontrolnych, 333 pliki)
 
-## Jak uruchomić (dla Claude)
-1. Jeśli plik `bm25_search.py` nie istnieje w katalogu roboczym sesji — zapisz go z bloku „Skrypt" poniżej.
-2. **W Cowork katalog roboczy bash to folder outputs, nie vault.** Auto-detekcja działa tylko gdy skrypt stoi wewnątrz drzewa vaulta. Najpewniej: podaj `--vault` ze ścieżką zamapowaną w bash (patrz system reminder „Shell access" na starcie sesji) — zwykle ma postać `/sessions/<id>/mnt/Documents/<nazwa Twojego vaulta>`. Przykład: `python bm25_search.py "<pytanie>" --vault "/sessions/<id>/mnt/Documents/<nazwa Twojego vaulta>" --top 8`.
-3. Zwróć użytkownikowi wynik z cytatami (plik › nagłówek). Najpierw vault-ask, dopiero potem ewentualnie doczytaj pełne pliki — oszczędza tokeny.
+| wersja | top1 | top3 | MRR | stabilność fleksji |
+|---|---|---|---|---|
+| z publicznego repo (etap A, stemming) | 7/16 | 13/16 | 0,637 | 7/8 |
+| ta (`bm25_pl.py`, konfiguracja z drugiego, bliźniaczego vaultu + filtr `status`/`typ`) | 7/16 | 13/16 | 0,637 | 7/8 |
 
-Flagi: `--top N`, `--full`.
+**Bez różnicy na tym vaulcie** — i to jest oczekiwany wynik, nie błąd pomiaru. Rozszerzenia
+w `bm25_pl.py` (więcej folderów kopii zapasowych w `SKIP_DIRS`, dopasowanie wag po każdym
+segmencie ścieżki dla układu Persona/Firma, filtr `status: obalone`, waga wg `typ`) naprawiają
+problemy zmierzone na INNYCH vaultach (kopie zapasowe na firmowym, brak jeszcze żadnej notatki
+`status: obalone` tu). Silnik zachowuje się prawie identycznie jak wersja z repo — ale jest
+gotowy na wszystkie te przypadki, gdy się pojawią. Sprawdź `python3 vault_stats.py "<vault>"`
+po każdej większej reorganizacji.
+
+**Znany limit, złapany pomiarem 27.08 (nie wróci, opisane w komentarzu przy `WAGI_TYPOW`):**
+pierwsza wersja wagi `typ` dawała `decyzja`/`procedura` mnożnik 1.2 — POWYŻEJ neutralnego 1.0.
+Dla samego BM25 (score 5-40) to nieszkodliwe, ale ta sama waga jest współdzielona z warstwą
+wektorową w skillu `vault-embed`, gdzie mnoży podobieństwo kosinusowe (zakres ~0,7-0,95).
+Boost 1.2 tam wystarczył, żeby notatka TYLKO WSPOMINAJĄCA temat (typ: procedura) wyprzedziła
+notatkę FAKTYCZNIE o tym temacie (typ: wiedza, waga 1.0) — na zapytaniu „hermes" top1 warstwy
+wektorowej spadł z 12/16 do 4/16, żargon z 5/5 do 0/5. Naprawione: żaden `typ` nie dostaje
+więcej niż 1.0, może tylko obniżać (jak `log`), nigdy podbijać.
+
+## Kiedy to nie wystarczy
+
+BM25 dopasowuje słowa. Jeśli pytanie nie ma wspólnych słów z notatką („kiedy oddać robotę
+tańszemu modelowi" kontra notatka „Tiering i delegacja modeli"), trafienie jest przypadkowe —
+w pomiarze niżej to jeden z dwóch nietrafionych przypadków BM25. Do takich pytań jest druga
+warstwa: skill `vault-embed` (embedding lokalny + hybryda). Na tych samych 16 zapytaniach
+hybryda daje top3 13/16 i MRR 0,750, sam wektor 13/16 i MRR 0,760 — ale wektor sam gubi
+rzeczy, które BM25 łapie bez trudu (patrz `vault-embed`, sekcja pomiaru).
 
 ## Skrypt
+
 ```python
 #!/usr/bin/env python3
 """
@@ -55,18 +82,61 @@ wypadku podaj --vault explicit albo ustaw zmienną VAULT_DIR.
 import os, re, sys, math, argparse
 from collections import Counter
 
+# Foldery calkowicie poza indeksem. Powod (pomiar 2026-08-26 na vaulcie pracowniczym):
+# .vault-lint-backup to 236 plikow / 1845 sekcji, czyli 19% calego indeksu — same kopie
+# zapasowe notatek, ktore juz sa w vaulcie w wersji biezacej. W pomiarze bazowym kopia
+# wypchnela oryginal z top3 w 4 z 6 nietrafionych zapytan (np. "wylaczenie zwrotow" —
+# pozycje 1 i 2 to byly backupy). Kopia nigdy nie moze wyjsc jako zrodlo prawdy.
 SKIP_DIRS = {".obsidian", ".git", ".claude", "node_modules", "__pycache__",
-             ".trash", "_kwarantanna"}
+             ".trash", "_kwarantanna",
+             ".vault-lint-backup", ".manifest-backup", "_do_usuniecia", "_rm-backup"}
 TOKEN_RE = re.compile(r"[a-ząćęłńóśźż0-9]+", re.IGNORECASE)
 
 # Wagi folderow. Powod (pomiar 2026-08-26): Dziennik to 22% tekstu vaultu, _inbox kolejne
 # 10%, i zalewaly wyniki, spychajac notatki docelowe. Nie wykluczamy ich, bo bywaja jedynym
 # zrodlem, tylko obnizamy. Dopasowanie po pierwszym segmencie sciezki wzgledem vaultu.
+# Wagi folderow. W tym vaulcie Dziennik i Hot NIE leza na pierwszym poziomie, tylko pod
+# Persona/ (decyzja 2026-07-25: Dziennik i Hot naleza do Persony). Dopasowanie po pierwszym
+# segmencie — jak w wersji z repo — nie zlapaloby ich wcale. Dlatego sprawdzamy KAZDY segment
+# sciezki i bierzemy wage najnizsza (Persona/Dziennik/_archiwum dostaje 0.3, nie 0.5).
+# Pomiar 2026-08-26: Dziennik to 242 pliki, Hot 127 — razem 35% plikow vaultu.
 WAGI_FOLDEROW = {
+    "_archiwum": 0.3,
     "Archiwum": 0.3,
     "Dziennik": 0.5,
+    "Hot": 0.5,
+    "INBOX_Notatki Tomek": 0.7,
     "_inbox": 0.7,
 }
+
+# Etap C (scalone tu 27.08, wczesniej osobno w bm25_search_wip.py). Waga wg pola `typ`
+# z frontmattera bije wage folderu, bo jest deklarowana wprost, nie zgadywana z lokalizacji
+# pliku — uzywana TYLKO gdy notatka ma frontmatter z `typ`, inaczej pozostaje waga_folderu.
+#
+# POPRAWKA 27.08 po pomiarze na tym vaulcie: oryginalna wersja z etapu C dawala `decyzja`
+# i `procedura` wage 1.2 (boost POWYZEJ neutralnego 1.0). Dla BM25 (score 5-40) to nieszkodliwe,
+# ale warstwa wektorowa mnozy przez to samo `waga` cosinus ograniczony do ~0.7-0.95 — boost 1.2
+# tam wystarczyl, zeby notatka TYLKO WSPOMINAJACA temat (typ: procedura, bocznie zawierajaca
+# slowo zapytania) wyprzedzila notatke FAKTYCZNIE o tym temacie (typ: wiedza, waga 1.0).
+# Zmierzone na zapytaniu "hermes": notatka "HOT — log zamknietych watkow" (typ: procedura,
+# tylko wzmianka) wskoczyla na 1. miejsce przed "Hermes — decyzja i plan wdrozenia" (typ: wiedza).
+# Efekt na całym zestawie: sam wektor top1 spadl z 12/16 do 4/16, zargon z 5/5 do 0/5.
+# Naprawa: zaden typ nie dostaje wiecej niz neutralne 1.0 — `typ` moze tylko obnizac
+# (jak `log`), nigdy podbijac ponad brak wagi w ogole. Podbicie waznosci decyzji/procedur
+# zostaje realizowane inaczej (BOOST_NAGLOWKA przy trafieniu w tytul), nie mnoznikiem globalnym.
+WAGI_TYPOW = {
+    "decyzja": 1.0,
+    "procedura": 1.0,
+    "wiedza": 1.0,
+    "mapa": 1.0,
+    "brief": 1.0,
+    "dane": 1.0,
+    "log": 0.5,
+}
+# Waga wg pola `status`. `obalone` nie jest wazone, tylko odfiltrowane w calosci
+# (patrz load_chunks i hybryda.Indeks.buduj) — ustalenie odwolane nie ma prawa
+# wyjsc jako odpowiedz, zostaje w vaulcie wylacznie jako historia decyzji.
+WAGI_STATUSOW = {"aktualne": 1.0, "szkic": 0.8, "archiwum": 0.4}
 # Indeksujemy wylacznie rdzenie, bez form doslownych. Powod (zmierzone 2026-08-26):
 # przy zachowanej formie z waga 0,15 score byly tak ciasne (6,38 kontra 6,36), ze odmiana
 # slowa nadal przestawiala kolejnosc, czyli cel etapu nie byl osiagniety.
@@ -120,7 +190,35 @@ def _twardy(r):
 
 
 def waga_folderu(rel):
-    return WAGI_FOLDEROW.get(rel.split(os.sep)[0], 1.0)
+    """Najnizsza waga sposrod wszystkich segmentow sciezki (nie tylko pierwszego)."""
+    waga = 1.0
+    for seg in rel.split(os.sep)[:-1]:
+        waga = min(waga, WAGI_FOLDEROW.get(seg, 1.0))
+    return waga
+
+
+def pola_frontmattera(text):
+    """Zwraca `typ` i `status` z frontmattera. Puste, gdy notatka go nie ma."""
+    if not text.startswith("---"):
+        return {}
+    koniec = text.find("\n---", 3)
+    if koniec == -1:
+        return {}
+    pola = {}
+    for linia in text[4:koniec].splitlines():
+        m = re.match(r"^(typ|status):\s*(\S+)", linia)
+        if m:
+            pola[m.group(1)] = m.group(2).strip()
+    return pola
+
+
+def waga_notatki(rel, meta):
+    """Waga finalna: `typ` z frontmattera bije folder, `status` zawsze mnozy na koncu.
+    `meta` puste (brak frontmattera) -> czysta waga_folderu, zachowanie sprzed etapu C."""
+    baza = WAGI_TYPOW.get(meta.get("typ"), None)
+    if baza is None:
+        baza = waga_folderu(rel)
+    return baza * WAGI_STATUSOW.get(meta.get("status", "aktualne"), 1.0)
 
 
 def find_vault(explicit=None):
@@ -186,7 +284,7 @@ def split_sections(text, path):
     return sections or [(os.path.basename(path)[:-3], text)]
 
 
-def load_chunks(vault):
+def load_chunks(vault, module=None):
     chunks = []
     for root, dirs, files in os.walk(vault):
         dirs[:] = [d for d in dirs if d not in SKIP_DIRS]
@@ -195,12 +293,26 @@ def load_chunks(vault):
                 continue
             full = os.path.join(root, fn)
             rel = os.path.relpath(full, vault)
+            # Regula twarda 3: granica Persona <-> Firma. Wersja z repo zgubila ten filtr,
+            # a tutaj jest potrzebny — przy pracy nad materialem dla zespolu Persona nie
+            # ma prawa wyjsc w wynikach.
+            if module:
+                low = rel.lower()
+                if module == "firma" and low.startswith("persona"):
+                    continue
+                if module == "persona" and not low.startswith("persona"):
+                    continue
             try:
                 txt = open(full, encoding="utf-8", errors="ignore").read()
             except Exception:
                 continue
+            meta = pola_frontmattera(txt)
+            if meta.get("status") == "obalone":
+                # Ustalenie odwolane. Zostaje w vaulcie jako historia decyzji,
+                # ale nie ma prawa wyjsc jako odpowiedz.
+                continue
             nazwa = fn[:-3]
-            waga = waga_folderu(rel)
+            waga = waga_notatki(rel, meta)
             for head, body in split_sections(txt, full):
                 toks = tokenize_z_prefiksami(head + " " + body)
                 if toks:
@@ -279,14 +391,26 @@ def main():
     ap.add_argument("query")
     ap.add_argument("--vault", default=None)
     ap.add_argument("--top", type=int, default=8)
+    ap.add_argument("--module", choices=["firma", "persona"], default=None,
+                    help="ogranicz do modulu (granica Persona/Firma)")
     ap.add_argument("--full", action="store_true", help="pełna treść sekcji zamiast snippetu")
     a = ap.parse_args()
+
+    # Windows: konsola i przekierowanie do pliku ida domyslnie przez cp1250, a vault ma
+    # w tresci strzalki, mysliniki i ogonki. Bez tego skrypt przewraca sie na
+    # UnicodeEncodeError w polowie wypisywania wynikow (potwierdzone 2026-08-26 na znaku
+    # U+2192). errors="replace", zeby pojedynczy egzotyczny znak nigdy nie ubil calego
+    # wyniku wyszukiwania.
+    try:
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    except Exception:
+        pass
 
     vault = find_vault(a.vault)
     if not os.path.isdir(vault):
         print(f"BLAD: nie ma folderu vault: {vault}", file=sys.stderr)
         sys.exit(2)
-    chunks = load_chunks(vault)
+    chunks = load_chunks(vault, a.module)
     ranked = bm25_rank(chunks, a.query)
     if not ranked:
         print("Brak trafien. Sprobuj innych slow kluczowych.")
