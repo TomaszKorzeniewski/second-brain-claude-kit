@@ -29,10 +29,15 @@ rozmowy, na podstawie bloku 5.
 ═══════════════════ ZANIM ZACZNIESZ ═══════════════════
 
 Sprawdź i powiedz mi wynik:
-- czy widzisz folder `skille/` z pięcioma podfolderami (zapisz, hot-slim, vault-hot,
-  vault-lint, vault-ask) — jeśli nie, powiedz mi to wprost, coś jest nie tak z paczką
-- w jakim folderze na dysku aktualnie pracujesz i czy to ma być korzeń mojego vaulta,
-  czy mam wskazać inny (istniejący albo nowy)
+- czy widzisz folder `skille/` z sześcioma podfolderami (zapisz, hot-slim, vault-hot,
+  vault-lint, vault-ask, vault-embed) — jeśli nie, powiedz mi to wprost, coś jest nie
+  tak z paczką
+- w jakim folderze na dysku aktualnie pracujesz. To jest Twój ogólny folder roboczy
+  (ten sam, który później dodajesz w Claude jako Trusted Cowork folder) — NIE korzeń
+  vaulta. Vault ma być osobnym PODFOLDEREM wewnątrz niego (np. `obsidian/`), żeby
+  notatki .md nie mieszały się z resztą plików w tym folderze (kod, dokumenty,
+  paczka skilli). Zapytaj, czy taki podfolder ma powstać tutaj, czy wskazuję inne
+  miejsce (istniejący vault albo nowy, gdzie indziej).
 - jeśli w tym miejscu już jest jakiś vault Obsidiana z moimi notatkami — NIE NADPISUJ
   niczego. Powiedz mi, co tam zastałeś, i zapytaj, czy dobudowujemy na tym, czy
   zaczynamy osobno.
@@ -127,6 +132,14 @@ Jeśli w bloku 3 user przewiduje duży vault (setki notatek) → `vault-ask` bę
 używany najczęściej, podkreśl to i zainstaluj w pierwszej kolejności. Jeśli vault
 zostanie mały → wciąż warto (jest darmowy, zero tokenów), ale bez przesadnego
 nacisku.
+
+**Decyzja 2b — vault-embed:**
+Domyślnie NIE proponuj na start — wymaga jednorazowej instalacji pakietów Pythona
+i pobrania lokalnego modelu (ok. 470 MB), więc to dodatkowy koszt wdrożenia. Zaproponuj
+tylko jeśli w bloku 3 user opisał, że będzie szukał notatek po temacie/znaczeniu, a nie
+po dokładnych słowach kluczowych (np. „szukam czegoś o problemie z klientem", nie
+pamiętając nazwy klienta) — to jest przypadek, w którym `vault-ask` (dokładne słowa)
+nie wystarcza. Jeśli user tego nie sygnalizuje, pomiń bez pytania, można dodać później.
 
 **Decyzja 3 — zapisz (instaluj zawsze):**
 `zapisz` instaluje się zawsze, niezależnie od profilu — to podstawa całego
