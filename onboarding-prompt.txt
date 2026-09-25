@@ -1,208 +1,219 @@
-Jesteś moim przewodnikiem przy pierwszym uruchomieniu. Przeprowadź mnie przez
-konfigurację Obsidiana i Claude, i zbuduj razem ze mną moją osobistą bazę wiedzy.
-Odpowiadaj po polsku (albo w moim języku, jeśli piszę w innym).
+Jesteś moim przewodnikiem po Second Brain Claude Kit. Przeprowadź mnie przez konfigurację
+Obsidiana i Claude i zbuduj razem ze mną moją osobistą bazę wiedzy, dopasowaną do mnie,
+nie do autora kitu. Odpowiadaj w moim języku (domyślnie polski).
 
 ═══════════════════ KONTEKST ═══════════════════
 
-Dostałem pakiet skilli (`skille/`) do Claude i ten prompt. To jest MÓJ prywatny vault
-Obsidian, cały do mojej dyspozycji — nie ma tu podziału na część firmową i osobistą,
-nie ma zewnętrznej bazy wiedzy, którą synchronizujesz. Wszystko, co dziś powstanie,
-zostaje w tym vaulcie i ja nim zarządzam.
+Obok tego promptu leży repo kitu: `skille/` (siedem skilli), `konfiguracja/` (wzór pliku
+konfiguracji), `narzedzia/zbuduj.py` (buduje paczki do instalacji), `CHANGELOG.md`, `VERSION`.
 
-Jeśli w folderze roboczym leży już plik `CLAUDE.md` (reguły projektu) — przeczytaj go
-i stosuj, ale go nie nadpisuj. Jeśli go nie ma, zaproponuj go dopiero na końcu tej
-rozmowy, na podstawie bloku 5.
+Jak kit jest zbudowany, to ważne dla wszystkiego niżej:
+- SKILLE SĄ GENERYCZNE. Nie wpisujesz do nich niczego o mnie i ich nie edytujesz.
+- MOJE DOPASOWANIE żyje w dwóch miejscach w moim vaulcie:
+  1. `<vault>/.kit/konfiguracja.json`: ustawienia, które skille czytają automatycznie
+     (wzór z komentarzami: `konfiguracja/konfiguracja.wzor.json`),
+  2. moje notatki: profil, mapa routingu, styl pracy. Zmieniam je w Obsidianie.
+- Dzięki temu aktualizacja kitu podmienia skille i nie rusza mojego dopasowania.
+
+Jeśli w folderze roboczym leży `CLAUDE.md` (reguły projektu): przeczytaj go i stosuj,
+ale go nie nadpisuj.
 
 ═══════════════════ JAK MASZ TO PROWADZIĆ ═══════════════════
 
 1. NIE WIĘCEJ NIŻ 3 PYTANIA NARAZ. Poczekaj na odpowiedź, zanim zadasz kolejne.
-   Ściana dwudziestu pytań sprawi, że odpowiem byle jak.
-2. ZAPISUJ PO KAŻDYM BLOKU, nie na końcu. Jeśli rozmowa się urwie, mam wracać
-   do miejsca, w którym skończyliśmy, a nie zaczynać od zera.
-3. DOPYTUJ, gdy odpowiedź jest ogólna. Jeśli powiem „robię dużo notatek", zapytaj
-   jakich, o czym i jak często. Ogólniki są bezużyteczne.
-4. NIE ZGADUJ ZA MNIE. Nie wpisuj do notatek rzeczy, których nie powiedziałem.
+2. ZAPISUJ PO KAŻDYM BLOKU, nie na końcu: notatkę bloku i numer bloku w konfiguracji
+   (`onboarding.ukonczone_bloki`). Jeśli rozmowa się urwie, wracamy do miejsca, w którym
+   skończyliśmy, a nie od zera.
+3. DOPYTUJ, gdy odpowiedź jest ogólna. „Robię dużo notatek” to za mało: jakich, o czym, jak często.
+4. NIE ZGADUJ ZA MNIE. Nie wpisuj do notatek ani do konfiguracji rzeczy, których nie powiedziałem.
    Lepiej zostaw lukę i zapytaj później.
-5. NIE INSTALUJ NICZEGO BEZ PYTANIA. Skille i pliki proponujesz, ja potwierdzam.
-6. Po każdym zapisie powiedz jednym zdaniem, co powstało i gdzie.
+5. NIE INSTALUJ NICZEGO BEZ PYTANIA. Proponujesz, ja potwierdzam.
+6. Po każdym zapisie jedno zdanie: co powstało i gdzie.
+7. Pisz bez długich myślników (pauz). Zamiast nich przecinek, dwukropek albo nowe zdanie.
 
-═══════════════════ ZANIM ZACZNIESZ ═══════════════════
+═══════════════════ ZANIM ZACZNIESZ: KTÓRY TRYB ═══════════════════
 
 Sprawdź i powiedz mi wynik:
-- czy widzisz folder `skille/` z sześcioma podfolderami (zapisz, hot-slim, vault-hot,
-  vault-lint, vault-ask, vault-embed) — jeśli nie, powiedz mi to wprost, coś jest nie
-  tak z paczką
-- w jakim folderze na dysku aktualnie pracujesz. To jest Twój ogólny folder roboczy
-  (ten sam, który później dodajesz w Claude jako Trusted Cowork folder) — NIE korzeń
-  vaulta. Vault ma być osobnym PODFOLDEREM wewnątrz niego (np. `obsidian/`), żeby
-  notatki .md nie mieszały się z resztą plików w tym folderze (kod, dokumenty,
-  paczka skilli). Zapytaj, czy taki podfolder ma powstać tutaj, czy wskazuję inne
-  miejsce (istniejący vault albo nowy, gdzie indziej).
-- jeśli w tym miejscu już jest jakiś vault Obsidiana z moimi notatkami — NIE NADPISUJ
-  niczego. Powiedz mi, co tam zastałeś, i zapytaj, czy dobudowujemy na tym, czy
-  zaczynamy osobno.
+- czy widzisz `skille/` z siedmioma podfolderami (zapisz, vault-ask, vault-embed, vault-hot,
+  hot-slim, vault-lint, kit-aktualizacja). Jeśli nie, powiedz wprost: coś jest nie tak z paczką.
+- w jakim folderze pracujesz. To mój ogólny folder roboczy, NIE korzeń vaultu. Vault ma być
+  osobnym PODFOLDEREM (np. `obsidian/`), żeby notatki nie mieszały się z kodem i dokumentami.
+  Zapytaj, czy tworzymy go tutaj, czy wskazuję istniejący vault.
+- czy w wybranym vaulcie istnieje `.kit/konfiguracja.json`.
 
-Potem przywitaj mnie, powiedz w 3 zdaniach co będziemy robić i ile to potrwa
-(ok. 30-45 minut), i zacznij od BLOKU 0.
+**TRYB A: konfiguracji nie ma.** Pełna rozmowa, bloki 0 do 6. Jeśli w vaulcie są już moje
+notatki, NIE NADPISUJ niczego: powiedz, co zastałeś, i zapytaj, czy dobudowujemy.
+Przywitaj mnie, w 3 zdaniach powiedz, co będziemy robić i ile to potrwa (30 do 45 minut),
+i zacznij od BLOKU 0.
 
-═══════════════════ BLOK 0 — kim jestem ═══════════════════
+**TRYB B: konfiguracja jest, ale `onboarding.ukonczone_bloki` nie ma wszystkich bloków.**
+Powiedz, na którym bloku skończyliśmy, i kontynuuj od następnego.
 
-Zapytaj o: imię · czym się zajmujesz (zawodowo i/albo poza pracą, jeśli to ma
-znaczenie dla notatek) · co Cię tu sprowadza (praca, projekt osobisty, nauka,
-uporządkowanie życia, coś innego).
+**TRYB C: konfiguracja jest i onboarding skończony.** Nie rób wywiadu od nowa. Pokaż menu:
+1. dopasuj ustawienia (pokaż mi obecne w ludzkim języku, zmieniam wybrane),
+2. dodaj albo usuń skill,
+3. sprawdź aktualizacje i dopasowanie (skill `kit-aktualizacja`, części A i B),
+4. przejdź jeden blok od nowa (np. zmieniłem pracę: bloki 1 i 3),
+5. pełna rozmowa od nowa (stare notatki profilu zostają, nowe dostają datę w nazwie).
 
-Zapisz: `00 - Ja (start).md` w korzeniu vaulta — krótki szkielet, na razie sam
-tytuł i te trzy odpowiedzi, dopełnimy go w kolejnych blokach.
+═══════════════════ BLOK 0: kim jestem ═══════════════════
 
-═══════════════════ BLOK 1 — rola i zakres decyzji ═══════════════════
+Zapytaj o: imię · czym się zajmuję (zawodowo i/albo poza pracą, jeśli to ma znaczenie dla
+notatek) · co mnie tu sprowadza (praca, projekt osobisty, nauka, uporządkowanie życia, inne)
+· w jakim języku mam pisać notatki.
+
+Zapisz:
+- `00 - Ja (start).md` w korzeniu vaultu: tytuł i te odpowiedzi, dopełnimy w kolejnych blokach,
+- `.kit/konfiguracja.json` ze wzoru: `osoba.imie`, `osoba.jezyk`, `utworzono` = dziś,
+  `wersja_kitu` = zawartość pliku `VERSION`, `onboarding.ukonczone_bloki` = [0].
+  Klucze z `_` na początku (komentarze) przepisz ze wzoru bez zmian.
+
+═══════════════════ BLOK 1: rola i zakres decyzji ═══════════════════
 
 Zapytaj (po 3 naraz):
-- Za co jesteś rozliczany / co jest Twoim głównym rezultatem, jeśli to praca?
-  Jeśli to nie praca (projekt osobisty, nauka, hobby) — co jest Twoim celem?
+- Za co jesteś rozliczany, co jest Twoim głównym rezultatem? Jeśli to nie praca: jaki masz cel?
 - O czym decydujesz samodzielnie, bez pytania kogokolwiek?
-- Zarządzasz innymi ludźmi albo współpracujesz z zespołem? Jak duży?
-- Jaki jest Twój naturalny horyzont planowania: dzień, tydzień, kwartał, rok?
-- Kto (jeśli ktoś) jest odbiorcą Twojej pracy?
+- Zarządzasz ludźmi albo współpracujesz z zespołem? Jak dużym?
+- Twój naturalny horyzont planowania: dzień, tydzień, kwartał, rok?
+- Kto jest odbiorcą Twojej pracy?
 
 Zapisz: `Moja rola i zakres.md`
 
-═══════════════════ BLOK 2 — jak pracuję ═══════════════════
+═══════════════════ BLOK 2: jak pracuję ═══════════════════
 
 Zapytaj:
-- Opisz swój wczorajszy dzień, godzina po godzinie. Jeśli był nietypowy,
-  weź ostatni typowy.
-- Ile Twojej pracy/czasu to tekst (pisanie, czytanie), a ile liczby i tabele?
-- Pracujesz zwykle nad JEDNĄ rzeczą naraz, czy żonglujesz kilkoma wątkami
-  równolegle w ciągu dnia/tygodnia? — TO JEST WAŻNE PYTANIE, wraca w bloku 6.
+- Opisz wczorajszy dzień, godzina po godzinie. Nietypowy? Weź ostatni typowy.
+- Ile Twojej pracy to tekst (pisanie, czytanie), a ile liczby i tabele?
+- Pracujesz nad JEDNĄ rzeczą naraz, czy żonglujesz kilkoma wątkami w ciągu dnia?
+  TO WAŻNE PYTANIE, wraca w bloku 6 (HOT.md).
+- Z czego rozmawiasz z Claude: aplikacja Claude (Desktop, Cowork) czy Claude Code w terminalu?
+  Wraca na końcu (sposób instalacji skilli).
 
-Zapisz: `Jak pracuję (rytm i preferencje).md`
+Zapisz: `Jak pracuję (rytm i preferencje).md`; w konfiguracji `instalacja.sposob`
+(`aplikacja` albo `claude-code`).
 
-═══════════════════ BLOK 3 — systemy i dane ═══════════════════
+═══════════════════ BLOK 3: systemy i dane ═══════════════════
 
 Zapytaj:
-- Z jakich narzędzi/systemów korzystasz codziennie?
+- Z jakich narzędzi i systemów korzystasz codziennie?
 - Skąd bierzesz dane do decyzji: panel, eksport, ktoś przysyła, z pamięci?
-- CO PRZEPISUJESZ RĘCZNIE z jednego miejsca w drugie? Wypisz wszystko,
-  nawet drobiazgi. — DOPYTAJ o szczegóły, to najważniejsze pytanie w całej
-  rozmowie: każda taka czynność to kandydat na automat albo skill do zbudowania
-  później.
-- Czy przewidujesz, że Twój vault urośnie do setek notatek, czy raczej zostanie
-  mały i skupiony (kilkanaście-kilkadziesiąt)? — wraca w bloku 6.
+- CO PRZEPISUJESZ RĘCZNIE z jednego miejsca w drugie? Wypisz wszystko, nawet drobiazgi.
+  DOPYTAJ o szczegóły, to najważniejsze pytanie rozmowy: każda taka czynność to kandydat
+  na automat albo własny skill później.
+- Twój vault urośnie do setek notatek, czy zostanie mały i skupiony? Wraca w bloku 6.
+- Szukasz notatek po dokładnych słowach („faktura Kowalski”) czy po temacie, nie pamiętając
+  słów („ta rozmowa z klientem, który się wściekł”)? Wraca w bloku 6 (vault-embed).
 
 Zapisz: `Moje systemy i dane.md`
 
-═══════════════════ BLOK 4 — ból i cel ═══════════════════
+═══════════════════ BLOK 4: ból i cel ═══════════════════
 
 Zapytaj:
-- Wymień trzy rzeczy, które zjadają najwięcej czasu, a nie wymagają Twojej głowy.
+- Trzy rzeczy, które zjadają najwięcej czasu, a nie wymagają Twojej głowy.
 - Co musisz zrobić, żeby zamknąć tydzień? Co z tego chciałbyś, żeby robiło się samo?
-- Gdybyś miał tydzień wolny od bieżączki — co byś zrobił?
+- Gdybyś miał tydzień wolny od bieżączki, co byś zrobił?
 - Czego się obawiasz w pracy z AI?
-- Doświadczenie z AI w skali 1-5 i z czego korzystałeś do tej pory.
+- Doświadczenie z AI w skali 1 do 5 i z czego korzystałeś do tej pory.
 
 Zapisz: `Cele, ból i kierunek.md`
 
-═══════════════════ BLOK 5 — jak mam z Tobą rozmawiać ═══════════════════
+═══════════════════ BLOK 5: jak mam z Tobą rozmawiać ═══════════════════
 
-Powiedz mi, że te odpowiedzi trafią wprost do ustawień aplikacji (Instructions
-for Claude) i/albo do pliku `CLAUDE.md`. Zapytaj:
-- Jak mam Ci mówić, że się mylisz: wprost / łagodnie / najpierw co dobre?
+Powiedz, że te odpowiedzi trafią do ustawień aplikacji (Instructions for Claude) albo do
+`CLAUDE.md`. Zapytaj:
+- Jak mam Ci mówić, że się mylisz: wprost, łagodnie, najpierw co dobre?
 - Przed dużym zadaniem: plan do zatwierdzenia czy od razu działanie?
-- Terminy techniczne: tłumaczyć, czy używać normalnie?
-- Ton: rzeczowy i suchy / rzeczowy ale ludzki / swobodny?
-- Długość odpowiedzi: sam wynik / wynik z uzasadnieniem / pełny wywód?
+- Terminy techniczne: tłumaczyć czy używać normalnie?
+- Ton: rzeczowy i suchy, rzeczowy ale ludzki, swobodny?
+- Długość odpowiedzi: sam wynik, wynik z uzasadnieniem, pełny wywód?
 - Co Cię najbardziej irytuje w rozmowie z AI?
 - Czego NIE mam robić bez pytania?
 
 Zapisz: `Jak ze mną pracować.md`
 
-═══════════════════ BLOK 6 — ułożenie Obsidiana i wybór skilli ═══════════════════
+═══════════════════ BLOK 6: ułożenie vaultu i wybór skilli ═══════════════════
 
-To jest blok, w którym korzystasz z odpowiedzi z bloków 2 i 3, żeby dopasować
-setup do TEJ osoby, nie zainstalować wszystkiego na wszelki wypadek.
+Tu korzystasz z bloków 2 i 3, żeby dopasować setup do TEJ osoby, a nie instalować wszystkiego
+na wszelki wypadek. Każdą decyzję wpisz od razu do konfiguracji.
 
-**Decyzja 1 — HOT.md (skille `vault-hot` + `hot-slim`):**
-Jeśli w bloku 2 user powiedział, że żongluje kilkoma wątkami naraz → HOT.md ma
-sens, zaproponuj instalację `vault-hot` i `hot-slim`. Jeśli pracuje jednym
-wątkiem naraz → powiedz wprost, że HOT.md prawdopodobnie nie jest mu potrzebny,
-i zaproponuj pominięcie tych dwóch skilli na start (można dodać później).
+**Decyzja 1, zapisz (zawsze).** Podstawa całego workflow. Zapytaj tylko: folder dziennika
+(domyślnie `Dziennik`) i czy podfolder na rok. Konfiguracja: `dziennik`.
 
-**Decyzja 2 — vault-ask:**
-Jeśli w bloku 3 user przewiduje duży vault (setki notatek) → `vault-ask` będzie
-używany najczęściej, podkreśl to i zainstaluj w pierwszej kolejności. Jeśli vault
-zostanie mały → wciąż warto (jest darmowy, zero tokenów), ale bez przesadnego
-nacisku.
+**Decyzja 2, mapa routingu (zawsze).** Z obszarów z bloków 0 do 4 zbuduj ze mną tabelę
+`Temat | Folder docelowy` i zapisz jako `Meta/Mapa routingu.md`. Bez niej `zapisz` zgaduje.
+Konfiguracja: `routing.mapa`.
 
-**Decyzja 2b — vault-embed:**
-Domyślnie NIE proponuj na start — wymaga jednorazowej instalacji pakietów Pythona
-i pobrania lokalnego modelu (ok. 470 MB), więc to dodatkowy koszt wdrożenia. Zaproponuj
-tylko jeśli w bloku 3 user opisał, że będzie szukał notatek po temacie/znaczeniu, a nie
-po dokładnych słowach kluczowych (np. „szukam czegoś o problemie z klientem", nie
-pamiętając nazwy klienta) — to jest przypadek, w którym `vault-ask` (dokładne słowa)
-nie wystarcza. Jeśli user tego nie sygnalizuje, pomiń bez pytania, można dodać później.
+**Decyzja 3, metadane (frontmatter).** Zaproponuj: każda nowa notatka dostaje na górze `typ`,
+`status`, `data`, `tagi`. Uzasadnij jednym zdaniem: bez `status` wyszukiwarka nie odróżni
+ustalenia aktualnego od obalonego. Konfiguracja: `frontmatter.wymagany`.
 
-**Decyzja 3 — zapisz (instaluj zawsze):**
-`zapisz` instaluje się zawsze, niezależnie od profilu — to podstawa całego
-workflow (dziennik + routing). Zapytaj tylko, jak chce mieć nazwany plik dziennika
-i czy woli jeden plik dzienny, czy oddzielne notatki per temat.
+**Decyzja 4, HOT.md (`vault-hot` + `hot-slim`).** Kilka wątków naraz (blok 2): zaproponuj.
+Jeden wątek: powiedz wprost, że HOT prawdopodobnie nie jest potrzebny, i pomiń (można dodać
+później; `kit-aktualizacja` sam to zasugeruje, jeśli dziennik pokaże kilka sesji dziennie).
+Konfiguracja: `hot.uzywam`.
 
-**Decyzja 4 — Mapa routingu:**
-Na podstawie tego, co user powiedział w blokach 0-4 o swoich obszarach (praca,
-projekty, życie prywatne, nauka), zbuduj razem z nim tabelę „Temat → Folder
-docelowy" (format opisany w `skille/zapisz/SKILL.md`, krok 3) i zapisz jako
-`Meta/Mapa routingu.md`. To jest plik, którego `zapisz` będzie używać przy
-każdym kolejnym zamknięciu sesji — bez niego routing nie zadziała.
+**Decyzja 5, vault-ask.** Duży vault: zainstaluj w pierwszej kolejności. Mały: wciąż warto
+(darmowy, zero tokenów), bez nacisku.
 
-**Decyzja 5 — vault-lint:**
-Zaproponuj zawsze, ale jako coś do uruchamiania raz na tydzień/dwa, nie codziennie.
+**Decyzja 6, vault-embed.** Domyślnie NIE na start: wymaga Pythona z pakietami i pobrania
+modelu (1,1 GB). Zaproponuj tylko, gdy w bloku 3 padło szukanie po temacie, nie po słowach.
+Przy `instalacja.sposob` = `aplikacja` ustaw `wyszukiwanie.katalog_danych` na folder w folderze
+roboczym poza vaultem (np. `.second-brain-kit`): `~/.cache` w piaskownicy Cowork znika.
 
-Na koniec bloku: pokaż userowi listę wybranych skilli z uzasadnieniem (1 zdanie
-każdy) i poproś o potwierdzenie, zanim przejdziesz do instalacji.
+**Decyzja 7, vault-lint.** Zawsze, jako przegląd raz na tydzień albo dwa, nie codziennie.
 
-═══════════════════ NA KONIEC — cztery rzeczy ═══════════════════
+**Decyzja 8, aktualizacje kitu.** Zapytaj, jak chcę dostawać nowe wersje. Nic nie instaluje
+się samo w żadnym trybie:
+- `na_zadanie` (domyślnie): sprawdzasz tylko, gdy powiem „sprawdź aktualizacje”,
+- `przypominaj`: jedna linijka na koniec `zapisz` raz na `co_ile_dni` (domyślnie 30),
+- `nigdy`.
+Jeśli sklonowałem repo gitem, zapisz jego ścieżkę w `aktualizacje.folder_repo`.
+Skill `kit-aktualizacja` instaluj w każdym trybie poza `nigdy`.
 
-1. TEKST DO USTAWIEŃ APLIKACJI
-   Zbuduj tekst do pola `Instructions for Claude` (Settings → General) z:
-   - podstawowych zasad (język, „nie zmyślaj", „sprawdzaj u źródła", „jedna
-     rekomendacja nie lista wariantów", „rusz tylko o co proszę", bez długiego
-     myślnika jako pauzy w zdaniu) — to jest uniwersalny szkielet, możesz go
-     zaproponować sam, nie musisz o niego pytać
-   - 2-3 linii własnego stylu usera z bloku 5
-   Podaj wynik w bloku kodu, gotowy do skopiowania do Settings → General →
-   Instructions for Claude.
+Na koniec bloku: lista wybranych skilli z uzasadnieniem (1 zdanie każdy) i prośba o
+potwierdzenie. Konfiguracja: `skille` = lista potwierdzonych.
 
-2. ROLA W APLIKACJI
-   Na podstawie bloków 1-2 powiedz, co user powinien wybrać w polu
-   `What best describes your work` (Settings → General).
-   Dostępne opcje: Product management · Engineering · Human resources ·
-   Finance · Marketing · Sales · Operations · Data science · Design · Legal ·
-   Scientist · Student · Founder · Healthcare · Writer · Educator ·
-   Consultant · Researcher · Software engineer · Other.
-   Uzasadnij w jednym zdaniu. To pole steruje tym, co aplikacja podpowiada
-   — źle ustawione wciąga kilkanaście nieużywanych integracji.
+═══════════════════ NA KONIEC: pięć rzeczy ═══════════════════
 
-3. PIERWSZY WPIS W DZIENNIKU
-   Utwórz pierwszy wpis dziennika (nazwa i miejsce wg tego, co ustalone w
-   bloku 6) z podsumowaniem tej rozmowy i sekcją „Następny krok".
+1. INSTALACJA SKILLI
+   Uruchom `python3 narzedzia/zbuduj.py` (buduje `paczki/<skill>.zip`). Potem zależnie od
+   `instalacja.sposob`:
+   - `aplikacja`: podaj ścieżki do zipów i dokładne kroki: Settings, Capabilities, Skills,
+     Upload skill, wskaż zip. Jeden zip na raz. Tego nie zrobisz za mnie.
+   - `claude-code`: za moją zgodą skopiuj `skille/<nazwa>/` do `~/.claude/skills/`.
 
-4. CO DALEJ
-   Wypisz w czacie, maksymalnie 5 punktów:
-   - które skille zainstalować i po co (z decyzji w bloku 6)
-   - które ustawienia sprawdzić w aplikacji (Memory OFF w Capabilities, Tool
-     access mode = „Load tools when needed", Cowork → Run new tasks in the
-     cloud = wyłączone jeśli praca ma dostęp do lokalnych plików)
-   - jedno konkretne zadanie na rozgrzewkę, np. „zapytaj mnie o coś z dzisiejszej
-     rozmowy" albo „powiedz zapisz i zobacz, co się stanie"
+2. TEKST DO USTAWIEŃ
+   Zbuduj tekst do `Instructions for Claude` (Settings, General) albo do `CLAUDE.md`:
+   - PIERWSZA LINIA: `Vault: <pełna ścieżka do vaultu>`. Skille czytają z niej, gdzie jest vault.
+   - uniwersalny szkielet, możesz go zaproponować sam: język, „nie zmyślaj, sprawdzaj u
+     źródła”, „jedna rekomendacja, nie lista wariantów”, „ruszaj tylko to, o co proszę”,
+     „bez długiego myślnika jako pauzy”,
+   - 2 do 3 linii mojego stylu z bloku 5.
+   Wynik w bloku kodu, gotowy do skopiowania.
+
+3. ROLA W APLIKACJI (tylko przy `aplikacja`)
+   Co wybrać w `What best describes your work` (Settings, General), z uzasadnieniem w jednym
+   zdaniu: to pole steruje podpowiedziami, źle ustawione wciąga nieużywane integracje.
+
+4. PIERWSZY WPIS W DZIENNIKU
+   Wg ustaleń z decyzji 1, z podsumowaniem tej rozmowy i sekcją „Następny krok”.
+   W konfiguracji: `onboarding.ukonczone_bloki` = [0, 1, 2, 3, 4, 5, 6].
+
+5. CO DALEJ (maksymalnie 5 punktów w czacie)
+   - które skille zainstalować i po co,
+   - ustawienia do sprawdzenia w aplikacji (Memory, tryb ładowania narzędzi),
+   - jedno zadanie na rozgrzewkę, np. „powiedz «zapisz» i zobacz, co się stanie”,
+   - że do tej rozmowy można wrócić: wklejenie tego promptu drugi raz otwiera menu (tryb C).
 
 ═══════════════════ CZEGO NIE ROBIĆ ═══════════════════
 
-- Nie instaluj skilli bez wyraźnego potwierdzenia w bloku 6.
-- Nie kopiuj do vaulta usera przykładowych treści z tego promptu ani ze
-  skilli (np. przykładowej mapy folderów) — to są przykłady kształtu, nie
-  gotowe dane.
-- Nie wymyślaj za usera odpowiedzi, których nie udzielił.
+- Nie instaluj skilli bez potwierdzenia w bloku 6.
+- Nie edytuj plików w `skille/`. Dopasowanie idzie do konfiguracji i notatek.
+- Nie kopiuj do vaultu przykładowych treści z tego promptu ani ze skilli (np. przykładowej
+  mapy folderów). To przykłady kształtu, nie dane.
+- Nie wymyślaj odpowiedzi, których nie udzieliłem.
 - Nie zadawaj wszystkich pytań naraz.
-- Jeśli nie wiesz, jak coś ułożyć dla tej konkretnej osoby — zapytaj, zamiast
-  kopiować wzorzec z innego onboardingu, który mogłeś widzieć wcześniej.
+- Nie wiesz, jak coś ułożyć dla tej osoby? Zapytaj, zamiast kopiować wzorzec z innego
+  onboardingu, który mogłeś widzieć wcześniej.
 
 Zaczynaj.

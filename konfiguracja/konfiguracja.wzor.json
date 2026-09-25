@@ -1,0 +1,87 @@
+{
+  "_opis": "Twoje dopasowanie kitu. Ten plik żyje w vaulcie jako .kit/konfiguracja.json i NIGDY nie jest nadpisywany przez aktualizację skilli. Tworzy go rozmowa startowa, zmienia skill kit-aktualizacja albo Ty ręcznie. Klucze zaczynające się od _ to komentarze.",
+  "wersja_kitu": "2.0.0",
+  "utworzono": "RRRR-MM-DD",
+
+  "_onboarding": "Postęp rozmowy startowej. Dzięki temu przerwana rozmowa wraca do właściwego bloku, a skończona otwiera menu zamiast wywiadu od nowa.",
+  "onboarding": {
+    "ukonczone_bloki": []
+  },
+
+  "_osoba": "Jak Claude ma z Tobą rozmawiać. Szczegóły prozą w notatce `Jak ze mną pracować`, tu tylko to, co skille czytają automatycznie.",
+  "osoba": {
+    "imie": "",
+    "jezyk": "pl"
+  },
+
+  "_instalacja": "Jak instalujesz skille. sposob: aplikacja (Claude Desktop/Cowork, wgrywasz zip w Settings) albo claude-code (folder ~/.claude/skills). Czyta to kit-aktualizacja.",
+  "instalacja": {
+    "sposob": "aplikacja",
+    "folder_skilli": "~/.claude/skills"
+  },
+
+  "_skille": "Które skille masz zainstalowane. kit-aktualizacja pokazuje zmiany tylko dla nich (plus zmiany ogólne).",
+  "skille": ["zapisz", "vault-ask", "vault-lint"],
+
+  "_dziennik": "Gdzie i jak skill `zapisz` prowadzi dziennik.",
+  "dziennik": {
+    "folder": "Dziennik",
+    "podfolder_roku": true,
+    "tryb": "dzienny",
+    "frontmatter": true
+  },
+
+  "_routing": "Notatka z tabelą Temat -> Folder docelowy. Zmieniasz ją w Obsidianie jak każdą inną.",
+  "routing": {
+    "mapa": "Meta/Mapa routingu.md"
+  },
+
+  "_hot": "HOT.md: szybki powrót do kontekstu. Ma sens przy wielu równoległych wątkach. uzywam=false wyłącza krok HOT w `zapisz` i przypomnienia w `vault-hot`.",
+  "hot": {
+    "uzywam": false,
+    "plik": "HOT.md",
+    "budzet_znakow": 4500,
+    "limit_watku": 700,
+    "dni_do_weryfikacji": 14,
+    "log_zamknietych": "Meta/HOT - log zamkniętych wątków.md"
+  },
+
+  "_frontmatter": "Metadane na górze każdej nowej notatki. Bez `status` wyszukiwarka nie odróżni ustalenia obowiązującego od obalonego.",
+  "frontmatter": {
+    "wymagany": true,
+    "pola": ["typ", "status", "data", "tagi"],
+    "typy": ["decyzja", "procedura", "wiedza", "mapa", "brief", "dane", "log"],
+    "statusy": ["aktualne", "szkic", "archiwum", "obalone"]
+  },
+
+  "_wyszukiwanie": "vault-ask i vault-embed. Waga < 1 obniża folder w wynikach, nie wyklucza go.",
+  "wyszukiwanie": {
+    "wagi_folderow": {},
+    "pomijaj_foldery": [],
+    "katalog_danych": "~/.cache/second-brain-kit"
+  },
+
+  "_lint": "vault-lint. `fakty`: liczby, które muszą być wszędzie takie same, np. {\"etykieta\": \"limit budżetu\", \"wzorzec\": \"limit\\\\D{0,10}(\\\\d+) zł\"}.",
+  "lint": {
+    "dni_nieaktualne": 90,
+    "foldery_bez_sierot": [],
+    "fakty": []
+  },
+
+  "_zapis": "Kiedy `zapisz` ma sam zaproponować zapis. procent_kontekstu to próg, przy którym model proponuje zapis, zanim zacznie się kompaktowanie.",
+  "zapis": {
+    "procent_kontekstu": 55,
+    "sekcja_czego_nie_robic": true
+  },
+
+  "_aktualizacje": "Dobrowolne. tryb: na_zadanie (tylko gdy powiesz „sprawdź aktualizacje”), przypominaj (jedna linijka przy starcie sesji co `co_ile_dni`), nigdy. Nic nie instaluje się samo.",
+  "aktualizacje": {
+    "tryb": "na_zadanie",
+    "co_ile_dni": 30,
+    "zrodlo": "https://github.com/TomaszKorzeniewski/second-brain-claude-kit",
+    "folder_repo": null,
+    "ostatnie_sprawdzenie": null,
+    "wdrozone": [],
+    "pominiete": []
+  }
+}

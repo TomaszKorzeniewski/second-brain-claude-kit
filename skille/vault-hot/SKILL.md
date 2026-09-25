@@ -1,36 +1,25 @@
 ---
 name: vault-hot
-description: "Pamięć między sesjami — czyta HOT.md na starcie sesji, żeby wejść w kontekst bez recapu. Użyj na starcie każdej sesji, gdy user mówi 'kontynuuj', 'na czym skończyliśmy', 'co dalej', albo po prostu zaczyna nową sesję. NIE zapisuje HOT.md — od tego jest skill 'zapisz'."
+description: "Pamięć między sesjami: czyta HOT.md na starcie sesji, żeby wejść w kontekst bez recapu. Użyj na starcie sesji, gdy user mówi 'kontynuuj', 'na czym skończyliśmy', 'co dalej', albo po prostu zaczyna nową sesję. NIE zapisuje HOT.md, od tego jest skill 'zapisz'."
 ---
 
-# vault-hot — szybki kontekst na start sesji
+# vault-hot: szybki kontekst na start sesji
 
-HOT.md to **pointer** (max 10 linii) w korzeniu vaultu (`Twój vault/HOT.md`). Wskazuje ostatnią sesję i następny krok — nie duplikuje dziennika.
-
-**Ten skill (i HOT.md w ogóle) ma sens głównie dla kogoś, kto pracuje w wielu równoległych
-wątkach i potrzebuje szybko wrócić w kontekst bez recapu.** Jeśli pracujesz jednym wątkiem
-naraz, wystarczy Ci sam dziennik (skill `zapisz`) i możesz w ogóle pominąć HOT.md — mniej
-plików do utrzymania. Ustalone przy onboardingu.
+HOT.md to żyjący log otwartych wątków w korzeniu vaultu. Wskazuje, gdzie skończyliśmy i co dalej,
+nie duplikuje dziennika. Ma sens przy wielu równoległych wątkach; przy jednym wystarczy dziennik.
 
 ## Na starcie sesji
 
-1. Przeczytaj `Twój vault/HOT.md`
-2. Na podstawie pointera — wiesz jaka była ostatnia sesja, jaki jest następny krok, i gdzie szukać szczegółów
-3. Jeśli potrzebujesz więcej kontekstu — przeczytaj plik dziennika wskazany w HOT.md (`Dziennik/RRRR-MM-DD.md`)
-4. Jeśli HOT.md nie istnieje — to nowy vault lub pierwszy raz, normalne
-
-## Format HOT.md (referencja)
-
-```
-# HOT — pointer (RRRR-MM-DD)
-
-Ostatnia sesja: RRRR-MM-DD
-Temat: [max 5 słów]
-Następny krok: [konkretna akcja]
-Otwarte: [2-3 tematy, po przecinku]
-Kontekst: [[RRRR-MM-DD]] | [[link do projektu]]
-```
+1. Vault: ścieżka z instrukcji użytkownika (linia `Vault:`), w Cowork z system reminder.
+2. Przeczytaj `<vault>/.kit/konfiguracja.json`, jeśli istnieje. `hot.uzywam` = false: powiedz
+   jednym zdaniem, że HOT jest wyłączony, i zaproponuj ostatni wpis dziennika zamiast niego.
+3. Przeczytaj HOT.md (`hot.plik`, domyślnie `HOT.md`). Brak pliku: nowy vault albo pierwszy raz,
+   to normalne, powiedz to i nie twórz pliku sam.
+4. **Linia ze `(stan na RRRR-MM-DD)` starszym niż `hot.dni_do_weryfikacji` (domyślnie 14 dni)
+   to hipoteza, nie fakt.** Zanim na niej oprzesz odpowiedź, sprawdź u źródła (notatka, plik,
+   system). Linia bez daty: traktuj tak samo.
+5. Potrzeba więcej kontekstu: przeczytaj wpis dziennika wskazany w HOT.md, nie cały dziennik.
 
 ## Zapis HOT.md
 
-**Nie robisz tego tutaj.** Skill `zapisz` odpowiada za aktualizację HOT.md na koniec sesji. Jeśli user mówi „zapisz" / „zamknij sesję" → triggeruj skill `zapisz`, nie vault-hot.
+**Nie robisz tego tutaj.** Na koniec sesji HOT.md aktualizuje skill `zapisz`.
