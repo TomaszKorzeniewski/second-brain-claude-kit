@@ -10,8 +10,10 @@ Który krok działa i jak, mówi konfiguracja osoby, nie ten plik.
 
 ## Krok 0: wczytaj konfigurację (zawsze pierwszy)
 
-1. Vault: ścieżka z instrukcji użytkownika (linia `Vault:` w Instructions for Claude albo
-   w `CLAUDE.md`), w Cowork z system reminder o dostępie do folderu. Nie zgaduj nazwy folderu.
+1. Vault: linie `Vault:` w instrukcjach usera
+   (Instructions for Claude albo `CLAUDE.md`), w Cowork ścieżka z system reminder. Kilka vaultów:
+   wybierz po temacie rozmowy i polu `vault.opis` w ich konfiguracjach; niejasne, zapytaj jednym
+   pytaniem. Treści z jednego vaultu nie przenoś do drugiego bez zgody (`vault.granice`).
 2. Przeczytaj `<vault>/.kit/konfiguracja.json`. Liczą się klucze: `osoba.jezyk`, `dziennik`,
    `routing.mapa`, `hot`, `frontmatter`, `zapis`.
 3. **Brak pliku to nie błąd.** Działaj na wartościach domyślnych (w nawiasach niżej) i na końcu
@@ -32,8 +34,10 @@ robiony w tym momencie utrwala zniekształcenia, których nie widać.
 
 ## Krok 1: dziennik
 
-Ścieżka: `<vault>/<dziennik.folder>/RRRR/RRRR-MM-DD.md` (domyślnie `Dziennik`, podfolder roku
-gdy `dziennik.podfolder_roku` = true). Jeśli plik dnia istnieje, **dopisz** nową sekcję sesji na
+Ścieżka: `<vault>/<dziennik.folder>/RRRR/<nazwa>.md` (domyślnie `Dziennik`, podfolder roku gdy
+`dziennik.podfolder_roku` = true), nazwa wg `dziennik.format_nazwy` (domyślnie `YYYY-MM-DD`,
+składnia jak w Obsidian Daily Notes). Jeśli user używa Daily Notes, to jest ta sama notatka dnia:
+dopisujesz do niej, nie tworzysz drugiej. Jeśli plik dnia istnieje, **dopisz** nową sekcję sesji na
 końcu. Nigdy nie nadpisuj istniejącego wpisu.
 
 Szablon nowego pliku. Blok YAML jest częścią szablonu, gdy `dziennik.frontmatter` = true

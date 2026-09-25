@@ -39,7 +39,17 @@ Sprawdź i powiedz mi wynik:
 - w jakim folderze pracujesz. To mój ogólny folder roboczy, NIE korzeń vaultu. Vault ma być
   osobnym PODFOLDEREM (np. `obsidian/`), żeby notatki nie mieszały się z kodem i dokumentami.
   Zapytaj, czy tworzymy go tutaj, czy wskazuję istniejący vault.
+- czy mam JEDEN vault, czy kilka (np. prywatny w iCloud, firmowy w OneDrive, projekt w Dropboxie).
+  Kilka: każdy dostaje własną konfigurację i przechodzimy go osobno; zacznij od tego, którego
+  będę używał najczęściej. Zapytaj o każdy: do czego służy (`vault.opis`) i czego nie wolno
+  z niego wynosić do innych (`vault.granice`, np. „dane klientów zostają w firmowym”).
 - czy w wybranym vaulcie istnieje `.kit/konfiguracja.json`.
+- JAK VAULT JEST JUŻ UŁOŻONY. Nie narzucaj swojego układu, dopasuj się do mojego:
+  - przejrzyj foldery pierwszego poziomu i policz notatki w każdym,
+  - przeczytaj `.obsidian/daily-notes.json` (folder i format notatki dnia) i `.obsidian/templates.json`
+    (folder szablonów), jeśli istnieją,
+  - sprawdź, czy notatki mają już frontmatter i jakich pól używają.
+  Powiedz mi w 3 zdaniach, co zastałeś. Te fakty wracają w bloku 6 jako wartości domyślne.
 
 **TRYB A: konfiguracji nie ma.** Pełna rozmowa, bloki 0 do 6. Jeśli w vaulcie są już moje
 notatki, NIE NADPISUJ niczego: powiedz, co zastałeś, i zapytaj, czy dobudowujemy.
@@ -136,15 +146,18 @@ Zapisz: `Jak ze mną pracować.md`
 Tu korzystasz z bloków 2 i 3, żeby dopasować setup do TEJ osoby, a nie instalować wszystkiego
 na wszelki wypadek. Każdą decyzję wpisz od razu do konfiguracji.
 
-**Decyzja 1, zapisz (zawsze).** Podstawa całego workflow. Zapytaj tylko: folder dziennika
-(domyślnie `Dziennik`) i czy podfolder na rok. Konfiguracja: `dziennik`.
+**Decyzja 1, zapisz (zawsze).** Podstawa całego workflow. Używam Daily Notes w Obsidianie?
+Zaproponuj ten sam folder i format (jeden plik na dzień zamiast dwóch). Nie używam: zapytaj
+o folder dziennika (domyślnie `Dziennik`) i podfolder na rok. Konfiguracja: `dziennik`.
 
-**Decyzja 2, mapa routingu (zawsze).** Z obszarów z bloków 0 do 4 zbuduj ze mną tabelę
-`Temat | Folder docelowy` i zapisz jako `Meta/Mapa routingu.md`. Bez niej `zapisz` zgaduje.
-Konfiguracja: `routing.mapa`.
+**Decyzja 2, mapa routingu (zawsze).** Zbuduj ze mną tabelę `Temat | Folder docelowy` z obszarów
+z bloków 0 do 4. Mam już foldery? Zacznij od nich, nowych dokładaj tylko tam, gdzie żaden
+nie pasuje. Zapisz jako `Meta/Mapa routingu.md` (albo tam, gdzie trzymam notatki o vaultcie).
+Bez mapy `zapisz` zgaduje. Konfiguracja: `routing.mapa`.
 
-**Decyzja 3, metadane (frontmatter).** Zaproponuj: każda nowa notatka dostaje na górze `typ`,
-`status`, `data`, `tagi`. Uzasadnij jednym zdaniem: bez `status` wyszukiwarka nie odróżni
+**Decyzja 3, metadane (frontmatter).** Używam już własnych pól? Zostaw je i dopisz tylko
+brakujące. Nie używam: zaproponuj, że każda nowa notatka dostaje na górze `typ`,
+`status`, `data`, `tagi`. Starych notatek nie ruszaj. Uzasadnij jednym zdaniem: bez `status` wyszukiwarka nie odróżni
 ustalenia aktualnego od obalonego. Konfiguracja: `frontmatter.wymagany`.
 
 **Decyzja 4, HOT.md (`vault-hot` + `hot-slim`).** Kilka wątków naraz (blok 2): zaproponuj.
@@ -185,6 +198,8 @@ potwierdzenie. Konfiguracja: `skille` = lista potwierdzonych.
 2. TEKST DO USTAWIEŃ
    Zbuduj tekst do `Instructions for Claude` (Settings, General) albo do `CLAUDE.md`:
    - PIERWSZA LINIA: `Vault: <pełna ścieżka do vaultu>`. Skille czytają z niej, gdzie jest vault.
+     Kilka vaultów: jedna linia na vault, `Vault (<nazwa>): <ścieżka>`, i zdanie: „Pytaj, do
+     którego vaultu zapisać, gdy temat nie wskazuje jednoznacznie”.
    - uniwersalny szkielet, możesz go zaproponować sam: język, „nie zmyślaj, sprawdzaj u
      źródła”, „jedna rekomendacja, nie lista wariantów”, „ruszaj tylko to, o co proszę”,
      „bez długiego myślnika jako pauzy”,

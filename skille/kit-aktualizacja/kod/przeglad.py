@@ -112,11 +112,12 @@ def dopasowanie(vault):
     folder_dz = os.path.join(vault, kit_konfig.wartosc(konf, "dziennik.folder", "Dziennik"))
     sesje_14 = dni_14 = 0
     for p in notatki(folder_dz) if os.path.isdir(folder_dz) else []:
+        # Data z nazwy, gdy jest w formacie ISO; inny format nazwy (np. DD.MM.YYYY z Daily
+        # Notes) nie może wyłączyć sygnału, więc wtedy data modyfikacji pliku.
         m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(p))
-        if not m:
-            continue
         try:
-            d = datetime.date.fromisoformat(m.group(1))
+            d = datetime.date.fromisoformat(m.group(1)) if m else \
+                datetime.date.fromtimestamp(os.path.getmtime(p))
         except ValueError:
             continue
         if (dzis - d).days <= 14:
@@ -134,6 +135,22 @@ def dopasowanie(vault):
         if wiek > 30:
             sygnal("dopasowanie-hot-wylacz", "wyłącz HOT.md albo odśwież go",
                    "HOT.md nieruszany od %d dni, a skille dalej go czytają na starcie sesji" % wiek)
+
+    # 2b. Układ Obsidiana kontra konfiguracja: Daily Notes w innym folderze albo formacie
+    # znaczy dwie notatki dnia zamiast jednej.
+    try:
+        with open(os.path.join(vault, ".obsidian", "daily-notes.json"), encoding="utf-8") as f:
+            dn = json.load(f)
+    except (OSError, ValueError):
+        dn = {}
+    dn_folder = (dn.get("folder") or "").strip("/")
+    dn_format = dn.get("format") or "YYYY-MM-DD"
+    kf_folder = kit_konfig.wartosc(konf, "dziennik.folder", "Dziennik")
+    kf_format = kit_konfig.wartosc(konf, "dziennik.format_nazwy", "YYYY-MM-DD")
+    if dn and (dn_folder and not dn_folder.startswith(kf_folder) or dn_format != kf_format):
+        sygnal("dopasowanie-daily-notes", "ustaw dziennik na folder i format z Obsidian Daily Notes",
+               "Obsidian tworzy notatki dnia w `%s` jako `%s`, kit pisze dziennik w `%s` jako `%s`; "
+               "powstają dwie notatki na jeden dzień" % (dn_folder or "/", dn_format, kf_folder, kf_format))
 
     # 3. Frontmatter.
     if kit_konfig.wartosc(konf, "frontmatter.wymagany", True) and n:

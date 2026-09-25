@@ -71,6 +71,21 @@ Twoich notatek do żadnego API poza samym Claude.
 Zajmuje to 30 do 45 minut, jednym ciągiem. Przerwana rozmowa wraca do bloku, na którym
 skończyliście, bo postęp zapisuje się w konfiguracji.
 
+## Twój układ, nie mój
+
+Kit nie zakłada żadnej struktury. Rozmowa startowa najpierw patrzy, co już masz, i od tego zaczyna:
+- **kilka vaultów** (np. prywatny w iCloud, firmowy w OneDrive, projekt w Dropboxie): każdy ma
+  własną konfigurację, opis „do czego służy” i granice, czego nie wolno z niego wynosić;
+  Claude wybiera vault po temacie i pyta, gdy nie jest pewien,
+- **dowolna chmura i dowolna ścieżka**, także ze spacjami i polskimi znakami,
+- **Daily Notes z Obsidiana**: dziennik kitu pisze do tej samej notatki dnia, w Twoim folderze
+  i formacie nazwy, zamiast tworzyć drugą,
+- **istniejące foldery i metadane**: mapa routingu startuje z Twoich folderów, a Twoje pola
+  we frontmatterze zostają.
+
+Jak w samochodzie: fotel, lusterka i kierownicę ustawiasz pod siebie, a silnik jest wspólny
+i dostaje poprawki od producenta.
+
 ## Jak kit się dopasowuje później
 
 - **Wróć do rozmowy startowej**, kiedy chcesz. Przy istniejącej konfiguracji zamiast wywiadu

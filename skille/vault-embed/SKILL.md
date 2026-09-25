@@ -43,6 +43,9 @@ odświeżał indeks.
 
 ## Jak uruchomić (dla Claude)
 
+Vault: linie `Vault:` w instrukcjach usera, w Cowork ścieżka z system reminder. Kilka vaultów:
+każdy ma własny indeks, szukaj w tym, którego dotyczy rozmowa; w pozostałych tylko na prośbę.
+
 ```bash
 ~/.cache/second-brain-kit/venv/bin/python "<katalog tego skilla>/kod/hybryda.py" "<pytanie>" --vault "<vault>" --top 8
 ```

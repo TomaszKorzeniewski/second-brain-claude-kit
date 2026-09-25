@@ -8,6 +8,13 @@
     "ukonczone_bloki": []
   },
 
+  "_vault": "Ten vault. Masz kilka (praca, prywatny, różne chmury)? Każdy ma własny plik konfiguracji. opis mówi Claude, kiedy użyć tego vaultu; granice to, czego nie wolno z niego wynosić do innych.",
+  "vault": {
+    "nazwa": "",
+    "opis": "",
+    "granice": ""
+  },
+
   "_osoba": "Jak Claude ma z Tobą rozmawiać. Szczegóły prozą w notatce `Jak ze mną pracować`, tu tylko to, co skille czytają automatycznie.",
   "osoba": {
     "imie": "",
@@ -23,10 +30,11 @@
   "_skille": "Które skille masz zainstalowane. kit-aktualizacja pokazuje zmiany tylko dla nich (plus zmiany ogólne).",
   "skille": ["zapisz", "vault-ask", "vault-lint"],
 
-  "_dziennik": "Gdzie i jak skill `zapisz` prowadzi dziennik.",
+  "_dziennik": "Gdzie i jak skill `zapisz` prowadzi dziennik. Używasz Obsidian Daily Notes? Wpisz tu ten sam folder i format (Settings, Daily notes), wtedy dziennik i notatka dnia to jeden plik.",
   "dziennik": {
     "folder": "Dziennik",
     "podfolder_roku": true,
+    "format_nazwy": "YYYY-MM-DD",
     "tryb": "dzienny",
     "frontmatter": true
   },

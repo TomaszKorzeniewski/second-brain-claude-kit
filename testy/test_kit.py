@@ -142,6 +142,30 @@ def main():
                 "# D\n" + "".join("## Sesja: %d\n" % i for i in range(5)), {"typ": "log"})
         kod, out = uruchom("skille/kit-aktualizacja/kod/przeglad.py", "--vault", v2, "--dopasowanie")
         sprawdz("dopasowanie-hot-wlacz" in out, "dopasowanie: kilka sesji dziennie proponuje HOT.md", out)
+        with open(os.path.join(v2, ".obsidian", "daily-notes.json"), "w", encoding="utf-8") as f:
+            json.dump({"folder": "Journal/Daily", "format": "DD.MM.YYYY"}, f)
+        kod, out = uruchom("skille/kit-aktualizacja/kod/przeglad.py", "--vault", v2, "--dopasowanie")
+        sprawdz("dopasowanie-daily-notes" in out and "Journal/Daily" in out,
+                "dopasowanie: inny układ Obsidiana (Daily Notes) jest wykrywany", out)
+
+        print("# kilka vaultów i chmur")
+        chmury = {"iCloud": "Library/Mobile Documents/iCloud~md~obsidian/Documents/Prywatny",
+                  "Dropbox": "Dropbox (Osobisty)/Obsidian/Praca vault",
+                  "OneDrive": "OneDrive - Firma Sp. z o.o/Notatki ąęśź"}
+        for nazwa, rel in chmury.items():
+            vx = os.path.join(tmp, "dom", rel)
+            os.makedirs(os.path.join(vx, ".obsidian"))
+            notatka(vx, "Notatka %s.md" % nazwa, "# %s\nunikalneslowo%s blat\n" % (nazwa, nazwa.lower()))
+        wyniki_ch = []
+        for nazwa, rel in chmury.items():
+            vx = os.path.join(tmp, "dom", rel)
+            kod, out = uruchom("skille/vault-ask/kod/bm25_pl.py", "blat", "--vault", vx)
+            inne = [n for n in chmury if n != nazwa]
+            wyniki_ch.append(kod == 0 and ("Notatka %s" % nazwa) in out and not any(("Notatka %s" % i) in out for i in inne))
+        sprawdz(all(wyniki_ch), "vault-ask: trzy vaulty w trzech chmurach, ścieżki ze spacjami i ogonkami, zero przecieku", str(wyniki_ch))
+        vx = os.path.join(tmp, "dom", chmury["OneDrive"])
+        kod, out = uruchom("skille/vault-ask/kod/bm25_pl.py", "blat", env={"VAULT_DIR": vx}, cwd=tmp)
+        sprawdz("Notatka OneDrive" in out, "VAULT_DIR wskazuje vault niezależnie od katalogu", out)
 
         print("# vault-embed")
         try:

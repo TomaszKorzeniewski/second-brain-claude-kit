@@ -9,7 +9,10 @@ Czysty Python, biblioteka standardowa, działa offline. Kod leży w `kod/`, nie 
 
 ## Jak uruchomić (dla Claude)
 
-1. Vault: ścieżka z instrukcji użytkownika (linia `Vault:`), w Cowork z system reminder.
+1. Vault: linie `Vault:` w instrukcjach usera
+   (Instructions for Claude albo `CLAUDE.md`), w Cowork ścieżka z system reminder. Kilka vaultów:
+   wybierz po temacie rozmowy i polu `vault.opis` w ich konfiguracjach; niejasne, zapytaj jednym
+   pytaniem. Treści z jednego vaultu nie przenoś do drugiego bez zgody (`vault.granice`).
 2. ```bash
    python3 "<katalog tego skilla>/kod/bm25_pl.py" "<pytanie>" --vault "<vault>" --top 8
    ```

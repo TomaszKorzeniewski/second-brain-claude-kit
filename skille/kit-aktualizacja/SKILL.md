@@ -15,7 +15,10 @@ czegoś w konfiguracji, robisz to przez migrację opisaną we wpisie CHANGELOG, 
 
 ## Krok 0: stan
 
-1. Vault: ścieżka z instrukcji użytkownika (linia `Vault:`), w Cowork z system reminder.
+1. Vault: linie `Vault:` w instrukcjach usera
+   (Instructions for Claude albo `CLAUDE.md`), w Cowork ścieżka z system reminder. Kilka vaultów:
+   wybierz po temacie rozmowy i polu `vault.opis` w ich konfiguracjach; niejasne, zapytaj jednym
+   pytaniem. Treści z jednego vaultu nie przenoś do drugiego bez zgody (`vault.granice`).
 2. Przeczytaj konfigurację. Brak pliku: ten user nie przeszedł rozmowy startowej. Zaproponuj
    ją (plik `onboarding-prompt.txt` z repo) albo utwórz konfigurację z
    `konfiguracja/konfiguracja.wzor.json`, pytając o wartości, których nie da się sprawdzić.

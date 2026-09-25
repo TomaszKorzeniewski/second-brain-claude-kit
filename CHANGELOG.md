@@ -69,6 +69,13 @@ czytane przez skrypt, więc trzymaj ich format. Najnowsza wersja na górze.
 - decyzja: nie
 - migracja: nie
 
+### Kilka vaultów, dowolna chmura, Twój układ Obsidiana
+- id: 2.0.0-wiele-vaultow
+- dotyczy: wszystkie
+- zysk: każdy vault (iCloud, OneDrive, Dropbox) ma własną konfigurację z opisem i granicami, a dziennik pisze do notatki dnia z Obsidian Daily Notes zamiast tworzyć drugą
+- decyzja: tak: opis i granice każdego vaultu, folder i format notatki dnia
+- migracja: klucze `vault` i `dziennik.format_nazwy` w konfiguracji; kilka linii `Vault (<nazwa>): <ścieżka>` w instrukcjach
+
 ### Szukanie w podfolderze
 - id: 2.0.0-folder
 - dotyczy: vault-ask, vault-embed
