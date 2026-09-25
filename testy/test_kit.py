@@ -123,6 +123,7 @@ def main():
         konf_p = os.path.join(v2, ".kit", "konfiguracja.json")
         konf = json.load(open(konf_p, encoding="utf-8"))
         konf["aktualizacje"]["pominiete"] = ["2.1.0-c"]
+        konf["wersja_kitu"] = "2.0.0"   # test nie może zależeć od wersji we wzorze
         json.dump(konf, open(konf_p, "w", encoding="utf-8"), ensure_ascii=False)
         for i in range(5):
             notatka(v2, "Zakupy/Lista %d.md" % i, "# Lista\nmleko\n", {"typ": "dane"})
@@ -147,6 +148,43 @@ def main():
         kod, out = uruchom("skille/kit-aktualizacja/kod/przeglad.py", "--vault", v2, "--dopasowanie")
         sprawdz("dopasowanie-daily-notes" in out and "Journal/Daily" in out,
                 "dopasowanie: inny układ Obsidiana (Daily Notes) jest wykrywany", out)
+
+        print("# wzorzec LLM Wiki: spis treści, aliasy, pojęcia bez strony, układ")
+        v3 = os.path.join(tmp, "v3")
+        zbuduj_vault(v3, z_konfiguracja=False)
+        notatka(v3, "Firmy/Instytut Badań Rynku.md", "# IBR\nFirma od ankiet konsumenckich.\n",
+                {"typ": "wiedza", "status": "aktualne", "aliases": "[IBR, Market Research Institute]",
+                 "opis": "Dostawca badań ankietowych"})
+        kod, out = uruchom("skille/vault-ask/kod/bm25_pl.py", "IBR", "--vault", v3)
+        sprawdz("Instytut Badań Rynku" in out.split("## 2.")[0], "vault-ask: trafienie po aliasie z frontmattera", out)
+        kod, out = uruchom("skille/vault-ask/kod/indeks.py", "--vault", v3)
+        sprawdz(kod == 0 and "Podgląd" in out and not os.path.exists(os.path.join(v3, "index.md")),
+                "indeks: domyślnie tylko podgląd, nic nie zapisuje", out)
+        kod, out = uruchom("skille/vault-ask/kod/indeks.py", "--vault", v3, "--zapisz")
+        ind = open(os.path.join(v3, "index.md"), encoding="utf-8").read() if os.path.exists(os.path.join(v3, "index.md")) else ""
+        sprawdz("[[Instytut Badań Rynku]] (wiedza): Dostawca badań ankietowych" in ind
+                and "Stary pomysł" not in ind and "2026-09-20" not in ind and "Remont kuchni" in ind,
+                "indeks: opis z frontmattera, bez obalonych i bez dziennika", ind[:600])
+        kod, out = uruchom("skille/vault-ask/kod/indeks.py", "--vault", v3, "--zapisz")
+        sprawdz(kod == 0, "indeks: własny, wygenerowany plik nadpisuje bez oporu", out)
+        with open(os.path.join(v3, "index.md"), "w", encoding="utf-8") as f:
+            f.write("# Mój ręczny spis\n")
+        kod, out = uruchom("skille/vault-ask/kod/indeks.py", "--vault", v3, "--zapisz")
+        sprawdz(kod != 0 and "Nie nadpisuję" in out and "ręczny" in open(os.path.join(v3, "index.md"), encoding="utf-8").read(),
+                "indeks: ręcznego index.md usera nie nadpisuje", out)
+        notatka(v3, "Projekty/Kafelki.md", "# Kafelki\nTo samo co w [[Kontakty wykonawców]].\n", {"typ": "wiedza"})
+        kod, out = uruchom("skille/vault-lint/kod/vault_lint.py", "--vault", v3)
+        sprawdz("wspomniane w 2 notatkach" in out and "Kontakty wykonawców" in out.split("=== 6.")[-1],
+                "vault-lint: pojęcie bez strony z 2 notatek", out)
+        notatka(v3, "Projekty/Ściana tekstu.md", "Tekst bez nagłówków. " * 300, {"typ": "wiedza"})
+        kod, out = uruchom("skille/kit-aktualizacja/kod/przeglad.py", "--vault", v3, "--dopasowanie")
+        sprawdz('"uklad-naglowki"' in out and "Ściana tekstu" in out and "HOT.md" not in out.split("uklad-naglowki")[1][:300],
+                "układ: długa notatka bez nagłówków (bez fałszywego alarmu na HOT.md)", out)
+        sprawdz('"uklad-indeks"' not in out, "układ: nie proponuje spisu, gdy już jest", out)
+        notatka(v3, "Dziennik/%s.md" % __import__("datetime").date.today().isoformat(),
+                "# D\n" + "".join("## [2026-09-25] sesja | t%d\n" % i for i in range(6)), {"typ": "log"})
+        kod, out = uruchom("skille/kit-aktualizacja/kod/przeglad.py", "--vault", v3, "--dopasowanie")
+        sprawdz("dopasowanie-hot-wlacz" in out, "dopasowanie: liczy sesje w nowym formacie nagłówka", out)
 
         print("# kilka vaultów i chmur")
         chmury = {"iCloud": "Library/Mobile Documents/iCloud~md~obsidian/Documents/Prywatny",

@@ -16,11 +16,29 @@ Czysty Python, biblioteka standardowa, działa offline. Kod leży w `kod/`, nie 
 2. ```bash
    python3 "<katalog tego skilla>/kod/bm25_pl.py" "<pytanie>" --vault "<vault>" --top 8
    ```
+   Pytanie ogólne („co mam o…”, „przegląd tematu”) i istnieje spis treści (`indeks.plik`,
+   domyślnie `index.md`): przeczytaj najpierw spis, potem tylko wskazane strony.
 3. Zwróć wynik z cytatami (plik › nagłówek), **zanim** doczytasz pełne pliki. Doczytuj tylko
    te, których fragment nie wystarczył.
 
 Flagi: `--top N`, `--full` (cała sekcja zamiast wycinka), `--folder <podfolder>` (szukaj tylko
 tam, np. gdy materiał dla zespołu nie może wyciągnąć notatek prywatnych).
+
+Odpowiedź była syntezą kilku notatek (porównanie, analiza)? Zaproponuj jednym zdaniem zapis
+jako nową notatkę: dobre odpowiedzi to wiedza, nie historia czatu.
+
+## Spis treści (opcjonalnie, wzorzec LLM Wiki)
+
+```bash
+python3 "<katalog tego skilla>/kod/indeks.py" --vault "<vault>"            # podgląd i koszt w tokenach
+python3 "<katalog tego skilla>/kod/indeks.py" --vault "<vault>" --zapisz   # zapis
+```
+
+Jeden plik z listą notatek i opisem w jednym zdaniu (pole `opis` albo pierwszy akapit), pogrupowany
+po folderach, bez dziennika i notatek obalonych. Składa go skrypt, więc utrzymanie kosztuje zero
+tokenów. Opłaca się do ok. 250 notatek (zmierzone: 321 notatek to ok. 8,5 tys. tokenów na
+jedno czytanie); w większym vaultcie tańsze jest szukanie. Istniejącego, ręcznego pliku o tej
+nazwie skrypt nie nadpisze.
 
 ## Co robi inaczej niż zwykły BM25
 
@@ -29,7 +47,7 @@ tam, np. gdy materiał dla zespołu nie może wyciągnąć notatek prywatnych).
 - Notatki ze `status: obalone` nie wychodzą w wynikach: zostają w vaulcie jako historia decyzji.
 - Wagi: dziennik, inbox i archiwum są obniżone (nie wykluczone), bo zalewają wyniki.
   Waga to niższa z wag folderu i pola `typ`, pomnożona przez wagę `status`.
-- Boost za trafienie w nazwę pliku i nagłówek sekcji.
+- Boost za trafienie w nazwę pliku, nagłówek sekcji, `aliases` i `opis` z frontmattera.
 
 ## Dopasowanie do osoby
 

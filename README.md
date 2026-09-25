@@ -2,7 +2,7 @@
 
 *(znane też jako **VALTOS**, jeśli wolisz krótszą nazwę)*
 
-Siedem umiejętności (skilli) do Claude i jedna rozmowa startowa, które razem zamieniają
+Osiem umiejętności (skilli) do Claude i jedna rozmowa startowa, które razem zamieniają
 Obsidiana w drugi mózg prowadzony przez Claude: dziennik, który pisze się sam, kontekst,
 który wraca między sesjami bez recapu, wyszukiwanie po notatkach bez zużywania tokenów
 i (opcjonalnie) wyszukiwanie znaczeniowe, gdy słowa kluczowe nie wystarczą.
@@ -42,7 +42,8 @@ skille/
   vault-hot/         szybki powrót do kontekstu na starcie sesji
   hot-slim/          kontrola budżetu HOT.md, żeby nie spuchł
   vault-lint/        przegląd higieny: martwe linki, sieroty, sprzeczności
-  kit-aktualizacja/  nowe wersje i przegląd dopasowania, tylko gdy chcesz
+  kit-aktualizacja/  nowe wersje, przegląd dopasowania i doradztwo układu, tylko gdy chcesz
+  przetworz-zrodlo/  źródło (artykuł, PDF, transkrypcja) do stron wiedzy, wzorzec LLM Wiki
 
 konfiguracja/konfiguracja.wzor.json   wzór ustawień z opisem każdego pola
 onboarding-prompt.txt                 rozmowa startowa (i menu przy powrocie)
@@ -71,6 +72,27 @@ Twoich notatek do żadnego API poza samym Claude.
 Zajmuje to 30 do 45 minut, jednym ciągiem. Przerwana rozmowa wraca do bloku, na którym
 skończyliście, bo postęp zapisuje się w konfiguracji.
 
+## Skąd to się wzięło
+
+Kit realizuje wzorzec [LLM Wiki Andreja Karpathy'ego](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
+zamiast za każdym razem szukać w surowych dokumentach, Claude raz przetwarza źródło i wpisuje
+wiedzę do trwałych, połączonych notatek, które rosną z każdym źródłem i pytaniem.
+
+| wzorzec LLM Wiki | w kicie |
+|---|---|
+| surowe źródła, tylko do czytania | źródła w Twoim folderze, `przetworz-zrodlo` ich nie zmienia |
+| wiki pisane przez LLM | strony wiedzy w folderach z Twojej mapy routingu |
+| schemat (CLAUDE.md) | konfiguracja kitu, mapa routingu, Twoje instrukcje |
+| ingest | `przetworz-zrodlo` (źródła) i `zapisz` (wnioski z rozmów) |
+| query, dobre odpowiedzi wracają do wiki | `vault-ask`, `vault-embed`, propozycja zapisu syntezy |
+| lint | `vault-lint`, w tym „pojęcia bez własnej strony” |
+| index.md i log.md | spis treści składany skryptem (zero tokenów), dziennik z nagłówkami `## [data] rodzaj \| tytuł` |
+
+Od siebie kit dokłada to, czego wzorzec celowo nie określa: wyszukiwanie po polsku bez tokenów,
+ochronę stron przejrzanych przez Ciebie (`sprawdzone: true`), sprzeczności oznaczane zamiast
+rozstrzyganych po cichu i dopasowanie do Twojego układu. Podobne podejście w formie pluginu
+Obsidiana: [LLM Wiki (karpathywiki)](https://community.obsidian.md/plugins/karpathywiki).
+
 ## Twój układ, nie mój
 
 Kit nie zakłada żadnej struktury. Rozmowa startowa najpierw patrzy, co już masz, i od tego zaczyna:
@@ -81,7 +103,10 @@ Kit nie zakłada żadnej struktury. Rozmowa startowa najpierw patrzy, co już ma
 - **Daily Notes z Obsidiana**: dziennik kitu pisze do tej samej notatki dnia, w Twoim folderze
   i formacie nazwy, zamiast tworzyć drugą,
 - **istniejące foldery i metadane**: mapa routingu startuje z Twoich folderów, a Twoje pola
-  we frontmatterze zostają.
+  we frontmatterze zostają,
+- **doradztwo zamiast przymusu**: kit podpowiada, co ułatwi wyszukiwanie, embedding i oszczędzi
+  tokeny (nagłówki w długich notatkach, spis treści, jedno miejsce na źródła), z zyskiem w jednym
+  zdaniu. Powiesz „zostaw”, to zostaje i sugestia nie wraca.
 
 Jak w samochodzie: fotel, lusterka i kierownicę ustawiasz pod siebie, a silnik jest wspólny
 i dostaje poprawki od producenta.

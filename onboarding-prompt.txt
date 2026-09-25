@@ -4,7 +4,7 @@ nie do autora kitu. Odpowiadaj w moim języku (domyślnie polski).
 
 ═══════════════════ KONTEKST ═══════════════════
 
-Obok tego promptu leży repo kitu: `skille/` (siedem skilli), `konfiguracja/` (wzór pliku
+Obok tego promptu leży repo kitu: `skille/` (osiem skilli), `konfiguracja/` (wzór pliku
 konfiguracji), `narzedzia/zbuduj.py` (buduje paczki do instalacji), `CHANGELOG.md`, `VERSION`.
 
 Jak kit jest zbudowany, to ważne dla wszystkiego niżej:
@@ -34,8 +34,8 @@ ale go nie nadpisuj.
 ═══════════════════ ZANIM ZACZNIESZ: KTÓRY TRYB ═══════════════════
 
 Sprawdź i powiedz mi wynik:
-- czy widzisz `skille/` z siedmioma podfolderami (zapisz, vault-ask, vault-embed, vault-hot,
-  hot-slim, vault-lint, kit-aktualizacja). Jeśli nie, powiedz wprost: coś jest nie tak z paczką.
+- czy widzisz `skille/` z ośmioma podfolderami (zapisz, vault-ask, vault-embed, vault-hot,
+  hot-slim, vault-lint, kit-aktualizacja, przetworz-zrodlo). Jeśli nie, powiedz wprost: coś jest nie tak z paczką.
 - w jakim folderze pracujesz. To mój ogólny folder roboczy, NIE korzeń vaultu. Vault ma być
   osobnym PODFOLDEREM (np. `obsidian/`), żeby notatki nie mieszały się z kodem i dokumentami.
   Zapytaj, czy tworzymy go tutaj, czy wskazuję istniejący vault.
@@ -175,7 +175,21 @@ roboczym poza vaultem (np. `.second-brain-kit`): `~/.cache` w piaskownicy Cowork
 
 **Decyzja 7, vault-lint.** Zawsze, jako przegląd raz na tydzień albo dwa, nie codziennie.
 
-**Decyzja 8, aktualizacje kitu.** Zapytaj, jak chcę dostawać nowe wersje. Nic nie instaluje
+**Decyzja 8, źródła i spis treści (wzorzec LLM Wiki Karpathy'ego).** Czytam artykuły, PDF-y,
+książki, transkrypcje i chcę, żeby wiedza z nich się kumulowała? Zaproponuj `przetworz-zrodlo`:
+źródło zostaje nietknięte, a wiedza trafia do stron o osobach, firmach, pojęciach. Zapytaj, czy
+źródła mają mieć jeden folder (`zrodla.folder`), czy zostają tam, gdzie są. Vault do ok. 250
+notatek: zaproponuj spis treści (`indeks.uzywam`), bo przy pytaniach ogólnych Claude czyta jeden
+plik zamiast kilkunastu. Większy vault: spis kosztuje więcej, niż oszczędza, pomiń.
+
+**Decyzja 9, doradztwo układu. POMAGASZ, NIE NARZUCASZ.** Uruchom przegląd skilla
+`kit-aktualizacja` (`kod/przeglad.py --dopasowanie`, lista `sugestie_ukladu`) i pokaż
+**maksymalnie 3** sugestie: każdą z tym, co konkretnie zyskam (trafniejsze wyszukiwanie, mniej
+tokenów, porządek) i ile to pracy. Domyślna odpowiedź to „zostaw”, nie „zrób”. Mój układ może
+mieć powody, których nie widzisz. Odrzucone zapisz w `aktualizacje.pominiete`, żeby nie wracały.
+Nic nie przenoś hurtem: zmiany w notatkach tylko partiami, za zgodą na każdą partię.
+
+**Decyzja 10, aktualizacje kitu.** Zapytaj, jak chcę dostawać nowe wersje. Nic nie instaluje
 się samo w żadnym trybie:
 - `na_zadanie` (domyślnie): sprawdzasz tylko, gdy powiem „sprawdź aktualizacje”,
 - `przypominaj`: jedna linijka na koniec `zapisz` raz na `co_ile_dni` (domyślnie 30),

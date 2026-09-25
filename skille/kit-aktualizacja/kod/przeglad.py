@@ -123,7 +123,8 @@ def dopasowanie(vault):
         if (dzis - d).days <= 14:
             dni_14 += 1
             with open(p, encoding="utf-8", errors="ignore") as f:
-                sesje_14 += len(re.findall(r"(?m)^## Sesja", f.read()))
+                # Stary nagłówek „## Sesja:” i nowy, parsowalny „## [RRRR-MM-DD] sesja | temat”.
+                sesje_14 += len(re.findall(r"(?mi)^## (?:Sesja|\[\d{4}-\d{2}-\d{2}\] sesja)", f.read()))
     hot_on = bool(kit_konfig.wartosc(konf, "hot.uzywam", False))
     hot_p = os.path.join(vault, kit_konfig.wartosc(konf, "hot.plik", "HOT.md"))
     if not hot_on and dni_14 and sesje_14 / dni_14 >= 2:
@@ -180,7 +181,98 @@ def dopasowanie(vault):
         sygnal("dopasowanie-mapa-brak", "utwórz mapę routingu", "brak pliku %s, `zapisz` zgaduje foldery" %
                os.path.relpath(mapa_p, vault))
 
-    return {"notatek": n, "sygnaly": sygnaly}
+    return {"notatek": n, "sygnaly": sygnaly, "sugestie_ukladu": uklad(vault, konf, pliki, pominiete)}
+
+
+def uklad(vault, konf, pliki, pominiete):
+    """Sugestie układu pod wyszukiwanie, embedding, tokeny i porządek. Tylko sugestie:
+    użytkownik może mieć powód, żeby zostało po staremu, a „zostaw” zapisuje się w
+    `aktualizacje.pominiete` i nie wraca."""
+    sug = []
+
+    def dodaj(id_, sugestia, dlaczego, zysk):
+        if id_ not in pominiete:
+            sug.append({"id": id_, "sugestia": sugestia, "dlaczego": dlaczego, "zysk": zysk})
+
+    n = len(pliki)
+    dlugie_bez_naglowkow, bardzo_dlugie = [], []
+    # HOT.md i spis treści mają celowo płaską budowę, nie są to notatki z wiedzą.
+    celowo_plaskie = {os.path.normpath(kit_konfig.wartosc(konf, "hot.plik", "HOT.md")),
+                      os.path.normpath(kit_konfig.wartosc(konf, "indeks.plik", "index.md"))}
+    for p in pliki:
+        if os.path.normpath(os.path.relpath(p, vault)) in celowo_plaskie:
+            continue
+        try:
+            t = open(p, encoding="utf-8", errors="ignore").read()
+        except OSError:
+            continue
+        rel = os.path.relpath(p, vault)
+        naglowki = len(re.findall(r"(?m)^#{1,6} ", t))
+        if len(t) > 20000:
+            bardzo_dlugie.append((rel, len(t)))
+        elif len(t) > 4000 and naglowki < 2:
+            dlugie_bez_naglowkow.append((rel, len(t)))
+
+    # 1. Wyszukiwanie dzieli notatki po nagłówkach. Długa ściana tekstu to jeden kawałek:
+    #    BM25 i embedding widzą ją jako całość i trafiają gorzej.
+    if dlugie_bez_naglowkow:
+        dodaj("uklad-naglowki", "dodaj nagłówki w długich notatkach bez struktury",
+              "notatki ponad 4000 znaków bez nagłówków: %d, np. %s" % (
+                  len(dlugie_bez_naglowkow), ", ".join(r for r, _ in dlugie_bez_naglowkow[:3])),
+              "wyszukiwanie zwraca konkretną sekcję zamiast całej notatki, mniej tokenów na odpowiedź")
+    if bardzo_dlugie:
+        dodaj("uklad-podzial", "rozważ podział bardzo długich notatek",
+              "notatki ponad 20 000 znaków: %d, np. %s" % (
+                  len(bardzo_dlugie), ", ".join(r for r, _ in sorted(bardzo_dlugie, key=lambda x: -x[1])[:3])),
+              "Claude czyta część, której potrzebuje, zamiast całości")
+
+    # 2. Spis treści (index.md) ze wzorca Karpathy'ego: opłaca się w mniejszych vaultach.
+    plik_ind = kit_konfig.wartosc(konf, "indeks.plik", "index.md")
+    ma_indeks = os.path.exists(os.path.join(vault, plik_ind))
+    if 20 <= n <= 250 and not ma_indeks:
+        dodaj("uklad-indeks", "wygeneruj spis treści (vault-ask, indeks.py)",
+              "%d notatek: spis zmieści się w ok. %d tysiącach tokenów" % (n, max(1, n * 27 // 1000)),
+              "przy pytaniach ogólnych Claude czyta jeden plik zamiast kilkunastu")
+    if n > 250 and ma_indeks:
+        dodaj("uklad-indeks-duzy", "zawęź spis treści albo polegaj na wyszukiwaniu",
+              "%d notatek: pełny spis kosztuje ok. %d tysięcy tokenów przy każdym czytaniu" % (n, n * 27 // 1000),
+              "tańsze pytania ogólne; archiwa wyłączysz przez indeks.pomijaj_foldery")
+
+    # 3. Źródła (artykuły, PDF-y) rozsiane po vaulcie zamiast w jednej, nietykanej warstwie.
+    foldery_zrodel = set()
+    for root, dirs, files in os.walk(vault):
+        dirs[:] = [d for d in dirs if d not in POMIJAJ and not d.startswith(".")]
+        for f in files:
+            if f.lower().endswith(".pdf"):
+                foldery_zrodel.add(os.path.relpath(root, vault).split(os.sep)[0])
+    for p in pliki:
+        glowa = open(p, encoding="utf-8", errors="ignore").read(600)
+        if re.search(r"(?m)^(source|zrodlo|źródło|url):\s*https?://", glowa):
+            foldery_zrodel.add(os.path.relpath(p, vault).split(os.sep)[0])
+    folder_zr = kit_konfig.wartosc(konf, "zrodla.folder")
+    if len(foldery_zrodel) >= 3 and not folder_zr:
+        dodaj("uklad-zrodla", "trzymaj źródła (artykuły, PDF-y) w jednym folderze, osobno od notatek",
+              "źródła leżą w %d folderach: %s" % (len(foldery_zrodel), ", ".join(sorted(foldery_zrodel)[:5])),
+              "wzorzec LLM Wiki: źródło zostaje nietknięte, wiedza z niego trafia do notatek; "
+              "wyszukiwanie nie miesza surowego artykułu z Twoimi wnioskami")
+
+    # 4. Załączniki: Obsidian bez stałego folderu wrzuca obrazy obok notatek.
+    try:
+        with open(os.path.join(vault, ".obsidian", "app.json"), encoding="utf-8") as f:
+            app = json.load(f)
+    except (OSError, ValueError):
+        app = {}
+    foldery_zal = set()
+    for root, dirs, files in os.walk(vault):
+        dirs[:] = [d for d in dirs if d not in POMIJAJ and not d.startswith(".")]
+        if any(f.lower().endswith((".png", ".jpg", ".jpeg", ".gif", ".webp")) for f in files):
+            foldery_zal.add(os.path.relpath(root, vault))
+    if len(foldery_zal) >= 4 and not app.get("attachmentFolderPath"):
+        dodaj("uklad-zalaczniki", "ustaw stały folder załączników (Settings, Files and links)",
+              "liczba folderów z obrazami: %d" % len(foldery_zal),
+              "porządek w drzewie folderów; obrazy nie mieszają się z notatkami")
+
+    return sug
 
 
 def main():

@@ -53,7 +53,7 @@ tagi: []
 ---
 # Dziennik: RRRR-MM-DD
 
-## Sesja: <temat w 3-5 słowach>
+## [RRRR-MM-DD] sesja | <temat w 3-5 słowach>
 
 **Co zrobiliśmy:**
 - ...
@@ -71,6 +71,8 @@ tagi: []
 ```
 
 Zasady:
+- Nagłówek sesji ma stały prefiks `## [RRRR-MM-DD] sesja | `, jak wpisy skilla
+  `przetworz-zrodlo` (`źródło |`). Historię da się wtedy wyciągnąć jednym `grep "^## \["`.
 - Konkretnie: co, gdzie, jaki wynik. Bez ogólników typu „rozmawialiśmy o projekcie”.
 - Linkuj notatki, które powstały albo zmieniły się: `[[Nazwa notatki]]`.
 - **Sekcja „Czego NIE robić” jest obowiązkowa, gdy w sesji coś odrzuciliśmy** (hipoteza obalona,
@@ -116,7 +118,11 @@ Zasady routingu:
    dokąd, i dopisz nowy wiersz do mapy.
 3. **Frontmatter od pierwszej wersji pliku**, gdy `frontmatter.wymagany` = true: pola z
    `frontmatter.pola`, wartości `typ` i `status` z list w konfiguracji. `status` i `data` nigdy puste.
-4. Ustalenie, które sesja obaliła: zmień w starej notatce `status: obalone` i dopisz jedno zdanie,
+4. **Dobre odpowiedzi wracają do vaultu.** Porównanie, analiza albo synteza, o którą user prosił
+   w tej sesji, to wiedza, nie historia czatu: zaproponuj jednym zdaniem zapis jako notatkę.
+5. **Notatka ze `sprawdzone: true`** jest przejrzana przez usera: nie zmieniaj jej treści,
+   dopisz na końcu sekcję `## Do przejrzenia` z propozycją.
+6. Ustalenie, które sesja obaliła: zmień w starej notatce `status: obalone` i dopisz jedno zdanie,
    dlaczego. Nie kasuj: historia decyzji zostaje, wyszukiwarka po prostu jej nie zwraca.
 
 ## Krok 4: odśwież indeks vault-embed (tylko gdy zainstalowany)
@@ -126,6 +132,9 @@ Gdy w `skille` konfiguracji jest `vault-embed`, uruchom w tle:
 ```bash
 ~/.cache/second-brain-kit/venv/bin/python "<katalog skilla vault-embed>/kod/hybryda.py" --sprawdz --vault "<vault>"
 ```
+
+Spis treści (`indeks.plik`) istnieje? Odśwież go też: skrypt `kod/indeks.py --zapisz` ze skilla
+`vault-ask`, w tle.
 
 Kod 0: indeks aktualny, koniec. Kod 1: odpal to samo z `--buduj` zamiast `--sprawdz`, w tle,
 bez czekania. Nie blokuj zamknięcia sesji na tym kroku. Katalog skilla vault-embed: w Claude

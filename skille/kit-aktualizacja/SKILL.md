@@ -47,6 +47,14 @@ czegoś w konfiguracji, robisz to przez migrację opisaną we wpisie CHANGELOG, 
 python3 "<katalog tego skilla>/kod/przeglad.py" --vault "<vault>" --dopasowanie
 ```
 
+Wynik ma dwie listy. `sygnaly`: czy ustawienia kitu pasują do tego, jak user pracuje.
+`sugestie_ukladu`: jak ułożyć vault pod wyszukiwanie, embedding, tokeny i porządek (nagłówki
+w długich notatkach, podział bardzo długich, spis treści, jedno miejsce na źródła, folder
+załączników). **Pomagamy, nie narzucamy:** user może mieć dobry powód, żeby zostało po staremu.
+Każdą sugestię podaj z zyskiem w jednym zdaniu i trzema odpowiedziami: zrób to ze mną,
+zostaw (zapisz w `pominiete`, nie wraca), później. Zmiany w notatkach usera tylko partiami
+i za zgodą na każdą partię; nigdy nie przenoś notatek hurtem.
+
 Każdy sygnał to propozycja z liczbą w uzasadnieniu (np. „412 notatek, brak vault-embed”).
 Pokaż je tak samo jak w części A: maksymalnie 5, wybór per sygnał. Sygnały to hipotezy:
 jeśli user mówi, że liczba myli (np. folder archiwalny zawyża licznik), przyjmij to i zaproponuj
