@@ -2,91 +2,135 @@
 
 *(znane też jako **VALTOS**, jeśli wolisz krótszą nazwę)*
 
-Zestaw sześciu umiejętności (skilli) do Claude i jedna rozmowa startowa, które razem
-zamieniają Obsidiana w drugi mózg prowadzony przez Claude: dziennik, który pisze się
-sam, kontekst, który wraca między sesjami bez recapu, wyszukiwanie po notatkach
-bez zużywania tokenów, i (opcjonalnie) wyszukiwanie znaczeniowe, gdy słowa kluczowe
-nie wystarczą.
+Siedem umiejętności (skilli) do Claude i jedna rozmowa startowa, które razem zamieniają
+Obsidiana w drugi mózg prowadzony przez Claude: dziennik, który pisze się sam, kontekst,
+który wraca między sesjami bez recapu, wyszukiwanie po notatkach bez zużywania tokenów
+i (opcjonalnie) wyszukiwanie znaczeniowe, gdy słowa kluczowe nie wystarczą.
 
-To nie jest jeden gotowy przepis na wszystkich. To jest mój własny, realnie
-używany od tygodni workflow, oddany w formie, którą możesz zainstalować i dostosować
-do siebie w jedną rozmowę.
+To nie jest jeden przepis na wszystkich. To mój własny, realnie używany workflow, oddany
+w formie, która **dopasowuje się do Ciebie**: przy starcie, w rozmowie, i potem, gdy zmienia
+się to, jak pracujesz.
 
 ## Dla kogo
 
-Dla każdego, kto pracuje z Claude i chce mieć obok solidną, prywatną bazę notatek
-w Obsidianie, zamiast polegać na pamięci aplikacji albo historii czatu. Nieważne,
-czy to praca, projekt osobisty, nauka czy uporządkowanie życia — rozmowa startowa
-pyta Cię o to na wstępie i dopasowuje resztę.
+Dla każdego, kto pracuje z Claude i chce mieć obok prywatną bazę notatek w Obsidianie, zamiast
+polegać na pamięci aplikacji albo historii czatu. Praca, projekt osobisty, nauka, uporządkowanie
+życia: rozmowa startowa pyta o to na wstępie i dopasowuje resztę.
+
+Działa w aplikacji Claude (Desktop, Cowork) i w Claude Code.
+
+## Jak to jest zbudowane
+
+Jedna zasada trzyma całość: **skille są wspólne, dopasowanie jest Twoje.**
+
+| warstwa | gdzie | kto zmienia |
+|---|---|---|
+| skille (logika) | `skille/`, instalowane w Claude | aktualizacje kitu |
+| Twoje ustawienia | `<vault>/.kit/konfiguracja.json` | rozmowa startowa, `kit-aktualizacja`, Ty |
+| Twój profil i mapa folderów | zwykłe notatki w vaulcie | Ty, w Obsidianie |
+
+Dlatego aktualizacja kitu podmienia skille i nie rusza Twoich ustawień ani notatek.
+Konfiguracja jedzie razem z vaultem, więc działa na każdym komputerze, na którym go otwierasz.
 
 ## Co jest w środku
 
 ```
 skille/
-  zapisz/         zamknięcie sesji: dziennik + routing notatek do właściwych miejsc
-  vault-ask/       lokalne wyszukiwanie po vaulcie (BM25 ze stemmingiem polskim, zero tokenów, zero API)
-  vault-embed/     opcjonalna druga warstwa nad vault-ask: embedding lokalny + hybryda,
-                   dla pytań opisowych bez wspólnych słów z notatką (patrz niżej)
-  vault-hot/       szybki powrót do kontekstu na starcie sesji, bez recapu
-  hot-slim/        kontrola budżetu pliku HOT.md, żeby nie spuchł bez kontroli
-  vault-lint/      cotygodniowa higiena vaulta: martwe linki, sieroty, sprzeczności
+  zapisz/            zamknięcie sesji: dziennik, HOT.md, routing notatek do właściwych miejsc
+  vault-ask/         wyszukiwanie po vaulcie (BM25, stemming polski, zero tokenów, zero API)
+  vault-embed/       opcjonalnie: wyszukiwanie po znaczeniu, model lokalny na CPU
+  vault-hot/         szybki powrót do kontekstu na starcie sesji
+  hot-slim/          kontrola budżetu HOT.md, żeby nie spuchł
+  vault-lint/        przegląd higieny: martwe linki, sieroty, sprzeczności
+  kit-aktualizacja/  nowe wersje i przegląd dopasowania, tylko gdy chcesz
 
-onboarding-prompt.txt   rozmowa startowa z Claude, która buduje Twoją konfigurację
+konfiguracja/konfiguracja.wzor.json   wzór ustawień z opisem każdego pola
+onboarding-prompt.txt                 rozmowa startowa (i menu przy powrocie)
+CHANGELOG.md                          co się zmieniło, wpis po wpisie, do wyboru
+narzedzia/zbuduj.py                   buduje paczki .zip do instalacji
+testy/test_kit.py                     test dymny wszystkich skryptów na przykładowym vaulcie
 ```
 
-Wszystkie skille to zwykłe pliki tekstowe (`SKILL.md`), część z nich niesie w środku
-mały skrypt w Pythonie. Pięć z sześciu to czysta biblioteka standardowa, zero zależności.
-Wyjątek to `vault-embed`: dokłada lokalny model embeddingu (`onnxruntime` + `tokenizers`,
-model pobierany raz, ok. 470 MB, potem działa offline). Nic z tego nie dzwoni do żadnego
-zewnętrznego API poza samym Claude — `vault-embed` liczy się lokalnie na CPU Twojej maszyny.
+Skrypty to czysty Python z biblioteką standardową. Wyjątek: `vault-embed` dokłada lokalny model
+(`onnxruntime` + `tokenizers`, model pobierany raz, ok. 1,1 GB, potem offline). Nic nie wysyła
+Twoich notatek do żadnego API poza samym Claude.
 
 ## Jak zacząć
 
-1. **Sklonuj albo pobierz to repo** do folderu, z którego korzysta Twój Claude.
-2. **Otwórz nową rozmowę i wklej całą zawartość `onboarding-prompt.txt`.**
-   Claude zada Ci pytania o to, jak pracujesz, ile masz notatek, czy żonglujesz
-   kilkoma wątkami naraz czy jednym — i na tej podstawie zaproponuje, które
-   z sześciu skilli realnie Ci się przydadzą. Nie każdy potrzebuje wszystkich sześciu.
-3. **Zainstaluj wybrane skille** przez Settings → Skills → Add w aplikacji Claude,
-   wskazując odpowiedni podfolder `skille/<nazwa>/SKILL.md`. `vault-embed` zainstaluj
-   tylko jeśli faktycznie masz pytania, na które `vault-ask` nie trafia — wymaga
-   jednorazowej instalacji pakietów Pythona i pobrania modelu, opisane w jego SKILL.md.
-4. Rozmowa zbuduje Ci też gotowy tekst do pola `Instructions for Claude`
-   (Settings → General) i powie, jaką rolę wybrać w polu `What best describes
-   your work`.
+1. **Sklonuj repo** (`git clone`, wtedy aktualizacje to jeden `git pull`) albo pobierz zip
+   do folderu, z którego korzysta Twój Claude.
+2. **Otwórz nową rozmowę i wklej całą zawartość `onboarding-prompt.txt`.** Claude zapyta, jak
+   pracujesz, ile masz notatek, czy żonglujesz kilkoma wątkami, i zaproponuje tylko te skille,
+   które realnie Ci się przydadzą.
+3. **Zainstaluj wybrane skille.** Rozmowa zbuduje paczki i poda dokładne kroki: w aplikacji
+   wgrywasz zip w Settings, Capabilities, Skills; w Claude Code kopiuje się folder do
+   `~/.claude/skills/`.
+4. Rozmowa zbuduje też tekst do `Instructions for Claude` (albo `CLAUDE.md`), z linią
+   `Vault: <ścieżka>`, z której korzystają skille.
 
-Zajmie to 30-45 minut, jednym ciągiem. Rozbicie na kilka dni sprawia, że połowa
-rzeczy zostaje niedokończona.
+Zajmuje to 30 do 45 minut, jednym ciągiem. Przerwana rozmowa wraca do bloku, na którym
+skończyliście, bo postęp zapisuje się w konfiguracji.
+
+## Twój układ, nie mój
+
+Kit nie zakłada żadnej struktury. Rozmowa startowa najpierw patrzy, co już masz, i od tego zaczyna:
+- **kilka vaultów** (np. prywatny w iCloud, firmowy w OneDrive, projekt w Dropboxie): każdy ma
+  własną konfigurację, opis „do czego służy” i granice, czego nie wolno z niego wynosić;
+  Claude wybiera vault po temacie i pyta, gdy nie jest pewien,
+- **dowolna chmura i dowolna ścieżka**, także ze spacjami i polskimi znakami,
+- **Daily Notes z Obsidiana**: dziennik kitu pisze do tej samej notatki dnia, w Twoim folderze
+  i formacie nazwy, zamiast tworzyć drugą,
+- **istniejące foldery i metadane**: mapa routingu startuje z Twoich folderów, a Twoje pola
+  we frontmatterze zostają.
+
+Jak w samochodzie: fotel, lusterka i kierownicę ustawiasz pod siebie, a silnik jest wspólny
+i dostaje poprawki od producenta.
+
+## Jak kit się dopasowuje później
+
+- **Wróć do rozmowy startowej**, kiedy chcesz. Przy istniejącej konfiguracji zamiast wywiadu
+  dostajesz menu: zmień ustawienia, dodaj skill, przejdź jeden blok od nowa.
+- **Powiedz „sprawdź aktualizacje”.** Skill `kit-aktualizacja` pokazuje nowe zmiany z tego repo,
+  tylko dla skilli, które masz, każdą z jednym zdaniem o tym, co zyskujesz. Wybierasz: wdrażam,
+  pomijam na stałe, później. Pominięte nie wracają.
+- **Powiedz „czy mój setup pasuje”.** Ten sam skill liczy sygnały w vaulcie (liczba notatek,
+  rytm dziennika, nieużywany HOT.md, notatki bez metadanych, foldery spoza mapy) i proponuje
+  zmiany z liczbą w uzasadnieniu, np. „412 notatek, rozważ vault-embed”.
+- **Nic nie dzieje się samo.** Domyślnie kit milczy o aktualizacjach, dopóki nie zapytasz.
+  Możesz włączyć jedną linijkę przypomnienia raz na miesiąc albo wyłączyć temat całkiem.
 
 ## Filozofia, w skrócie
 
-- **Zero-token tam, gdzie się da.** `vault-ask`, `vault-lint`, `hot-slim` to czysty
-  Python, bez modeli AI w środku. Szukanie po notatkach i sprzątanie vaulta nie
-  powinno kosztować tokenów. Jedyny wyjątek to `vault-embed`: dokłada lokalny model
-  (zero tokenów Claude, zero API, ale nie zero obliczeń — liczy się na Twoim CPU).
-- **Skille żyją w Twoim vaulcie, nie tylko w aplikacji.** Jeśli kiedyś zmienisz
-  narzędzie, zabierasz je ze sobą. Aplikacje AI się zmieniają, Twoje notatki zostają.
-- **Dziennik jest logiem przelotnym, nie miejscem docelowym.** Trwałe decyzje
-  dostają własną notatkę. Dziennik tylko pokazuje, co się działo i kiedy.
-- **Nikt nie zgaduje za Ciebie.** Rozmowa startowa pyta, zamiast zakładać. Jeśli
-  czegoś nie powiedziałeś, zostaje luka, nie wymyślona odpowiedź.
+- **Zero tokenów tam, gdzie się da.** Szukanie, sprzątanie i przegląd dopasowania to czysty
+  Python, bez modeli AI w środku.
+- **Twoje notatki zostają Twoje.** Aplikacje AI się zmieniają, pliki Markdown zostają.
+- **Dziennik jest logiem przelotnym, nie miejscem docelowym.** Trwałe decyzje dostają własną
+  notatkę; dziennik pokazuje, co się działo i kiedy.
+- **Nikt nie zgaduje za Ciebie.** Rozmowa pyta, zamiast zakładać. Luka jest lepsza niż
+  wymyślona odpowiedź.
+- **Zmiana to Twoja decyzja.** Kit proponuje z uzasadnieniem, Ty wybierasz.
 
 ## Czego to NIE robi
 
-Nie synchronizuje niczego z chmurą, nie wysyła Twoich notatek nigdzie poza Twoim
-komputerem, nie zakłada konkretnej struktury folderów — to Ty i rozmowa startowa
-ją ustalacie. Jeśli szukasz gotowej bazy wiedzy firmowej z automatyczną
-synchronizacją, to inny projekt niż ten.
+Nie synchronizuje niczego z chmurą, nie wysyła notatek poza Twój komputer, nie narzuca struktury
+folderów i nie aktualizuje się samo. Jeśli szukasz firmowej bazy wiedzy z automatyczną
+synchronizacją, to inny projekt.
 
-## Stan projektu
+## Dla autorów zmian
 
-Wczesna wersja, w testach z pierwszymi użytkownikami. Struktura i nazwy mogą się
-jeszcze zmienić.
+1. Kod wspólny edytuj w `wspolne/kit_konfig.py` i `skille/vault-ask/kod/bm25_pl.py`;
+   `narzedzia/zbuduj.py` rozkłada kopie do pozostałych skilli.
+2. `python3 testy/test_kit.py` musi przejść. Test vault-embed uruchamia się, gdy model jest pobrany.
+3. `python3 narzedzia/zbuduj.py --sprawdz` pilnuje, żeby w skillach nie było ścieżek konkretnego
+   komputera ani danych osobowych. Własne prywatne słowa dopisz do
+   `narzedzia/.zakazane-lokalne.txt` (poza gitem).
+4. Każda zmiana dla użytkowników dostaje wpis w `CHANGELOG.md` (format opisany na górze pliku)
+   i podbicie `VERSION`.
 
 ## Kontakt
 
-Tomasz Korzeniewski — [LinkedIn](https://www.linkedin.com/in/tomasz-korzeniewski-b590ba1b1)
+Tomasz Korzeniewski, [LinkedIn](https://www.linkedin.com/in/tomasz-korzeniewski-b590ba1b1)
 
 ## Licencja
 
-MIT — rób z tym, co chcesz, adaptuj do siebie, nie musisz pytać o zgodę.
+MIT: rób z tym, co chcesz, adaptuj do siebie, nie musisz pytać o zgodę.

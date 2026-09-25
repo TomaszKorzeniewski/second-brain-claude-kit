@@ -1,135 +1,143 @@
 ---
 name: zapisz
-description: "Zamknięcie sesji — zapis do dziennika, aktualizacja HOT.md i routing treści do właściwych notatek w vaulcie. Użyj gdy user mówi: 'zapisz', 'zamknij sesję', 'koniec sesji', 'save', 'zapisz stan', 'zamykamy', 'koniec na dziś', 'to tyle'. Triggeruj też gdy sesja była długa i poruszała wiele tematów — zaproponuj zapis nawet jeśli user nie poprosił wprost."
+description: "Zamknięcie sesji: wpis do dziennika, aktualizacja HOT.md (jeśli go używasz) i routing treści do właściwych notatek w vaulcie Obsidian. Użyj, gdy user mówi: 'zapisz', 'zamknij sesję', 'koniec sesji', 'save', 'zapisz stan', 'zamykamy', 'koniec na dziś', 'to tyle'. Zaproponuj zapis sam, gdy sesja jest długa albo wielotematyczna, nie czekaj na komendę."
 ---
 
-# zapisz — zamknięcie sesji
+# zapisz: zamknięcie sesji
 
-Jeden command robi do trzech rzeczy: dziennik, HOT.md (jeśli ten user go używa), routing treści.
+Jeden command, do czterech kroków: dziennik, HOT.md, routing treści, odświeżenie indeksu.
+Który krok działa i jak, mówi konfiguracja osoby, nie ten plik.
 
-Vault root: ścieżka do vaulta usera, ustalona przy onboardingu (patrz `onboarding-prompt.txt`
-w tym repo). Nie zakładaj konkretnej nazwy folderu.
+## Krok 0: wczytaj konfigurację (zawsze pierwszy)
 
-**Ten skill jest generyczny.** Mapa folderów w kroku 3 i to, czy w ogóle używasz kroku 2 (HOT.md),
-zależą od tego, jak ten konkretny user pracuje — nie kopiuj przykładów z tego pliku jako gotowej
-odpowiedzi. Jeśli w vaulcie usera istnieje notatka `Meta/Mapa routingu.md` (albo podobna, powstała
-przy onboardingu), **czytaj mapę stamtąd**. Jeśli jej nie ma, zapytaj usera przy pierwszym użyciu
-tego skilla, jak chce mieć poukładane notatki, i zapisz odpowiedź jako taką notatkę, żeby nie
-pytać drugi raz.
+1. Vault: linie `Vault:` w instrukcjach usera
+   (Instructions for Claude albo `CLAUDE.md`), w Cowork ścieżka z system reminder. Kilka vaultów:
+   wybierz po temacie rozmowy i polu `vault.opis` w ich konfiguracjach; niejasne, zapytaj jednym
+   pytaniem. Treści z jednego vaultu nie przenoś do drugiego bez zgody (`vault.granice`).
+2. Przeczytaj `<vault>/.kit/konfiguracja.json`. Liczą się klucze: `osoba.jezyk`, `dziennik`,
+   `routing.mapa`, `hot`, `frontmatter`, `zapis`.
+3. **Brak pliku to nie błąd.** Działaj na wartościach domyślnych (w nawiasach niżej) i na końcu
+   zapytaj jednym zdaniem, czy utworzyć konfigurację: bez niej każde `zapisz` zgaduje od nowa.
 
-## Krok 1: Dziennik
+Pisz w języku z `osoba.jezyk` (domyślnie język, w którym pisze user).
 
-Utwórz lub zaktualizuj plik `Dziennik/RRRR-MM-DD.md` (data dzisiejsza).
+## Kiedy zapisywać: wcześnie, nie przy kompaktowaniu
 
-Jeśli plik już istnieje (bo to druga sesja tego dnia) — dopisz nową sekcję pod istniejącą treścią z nagłówkiem `## Sesja N` i godziną.
+Zapis zrobiony wcześnie bije zapis zrobiony kompletnie. Kompaktowanie odpala się przy pełnym
+kontekście, czyli wtedy, gdy model widzi już własne streszczenia zamiast faktów, i zapis
+robiony w tym momencie utrwala zniekształcenia, których nie widać.
 
-Szablon nowego wpisu:
+1. Próg: około `zapis.procent_kontekstu` okna kontekstu (domyślnie 55%). Nie czekaj na
+   komunikat o kompaktowaniu.
+2. Naturalne momenty: domknięty wątek, zmiana tematu, koniec dnia na temacie.
+3. Nie przerywaj wdrożenia w połowie: dokończ mikrokrok, potem zapisz.
+
+## Krok 1: dziennik
+
+Ścieżka: `<vault>/<dziennik.folder>/RRRR/<nazwa>.md` (domyślnie `Dziennik`, podfolder roku gdy
+`dziennik.podfolder_roku` = true), nazwa wg `dziennik.format_nazwy` (domyślnie `YYYY-MM-DD`,
+składnia jak w Obsidian Daily Notes). Jeśli user używa Daily Notes, to jest ta sama notatka dnia:
+dopisujesz do niej, nie tworzysz drugiej. Jeśli plik dnia istnieje, **dopisz** nową sekcję sesji na
+końcu. Nigdy nie nadpisuj istniejącego wpisu.
+
+Szablon nowego pliku. Blok YAML jest częścią szablonu, gdy `dziennik.frontmatter` = true
+(domyślnie tak): wpis dziennika prawie zawsze zawiera ustalenia, które później trzeba odróżnić
+od obalonych, a bez `status` wyszukiwarka tego nie zrobi.
 
 ```markdown
-# Dziennik — RRRR-MM-DD
+---
+typ: log
+status: aktualne
+data: RRRR-MM-DD
+tagi: []
+---
+# Dziennik: RRRR-MM-DD
 
-**Data:** RRRR-MM-DD
+## Sesja: <temat w 3-5 słowach>
+
+**Co zrobiliśmy:**
+- ...
+
+**Decyzje:**
+- ...
+
+**Czego NIE robić:**
+- Ścieżka sprawdzona i odrzucona, powód w jednym zdaniu
+
+**Następny krok:**
+- ...
 
 ---
-
-## Zadania dnia
-
-- [x] Co zostało zrobione (krótko, konkretnie)
-- [ ] Co zostało otwarte
-
----
-
-## Decyzje
-
-- Decyzja → uzasadnienie (1 linia)
-
----
-
-## Routing
-
-<!-- lista notatek zaktualizowanych lub utworzonych w kroku 3 -->
-- [[Nazwa notatki]] — co dodano
-
----
-
-## Następny krok
-
-- Jeden konkretny krok na następną sesję
 ```
 
 Zasady:
-- Pisz zwięźle — dziennik to log, nie esej
-- Każde zadanie = 1 linia, max 2 zdania
-- Decyzje = co + dlaczego, żeby nie wracać do tematu
-- Sekcja "Routing" dokumentuje co trafiło gdzie (ślad audytu)
+- Konkretnie: co, gdzie, jaki wynik. Bez ogólników typu „rozmawialiśmy o projekcie”.
+- Linkuj notatki, które powstały albo zmieniły się: `[[Nazwa notatki]]`.
+- **Sekcja „Czego NIE robić” jest obowiązkowa, gdy w sesji coś odrzuciliśmy** (hipoteza obalona,
+  narzędzie ocenione na nie, obejście, które nie zadziałało). Bez niej następna sesja wchodzi
+  w tę samą ścianę. Gdy nic nie odrzuciliśmy, usuń sekcję zamiast wpisywać „brak”.
+  Wyłącznik: `zapis.sekcja_czego_nie_robic` = false.
+- Dopisując sesję do istniejącego pliku, sprawdź, czy blok YAML jest na górze; brak, to dopisz.
+- **Dziennik jest logiem przelotnym, nie miejscem docelowym.** Decyzja ważna dłużej niż tydzień
+  idzie do własnej notatki (krok 3), a w dzienniku zostaje link do niej.
 
-## Krok 2: HOT.md — log żyjący pod kontrolą budżetu (NIE nadpisuj w całości)
+## Krok 2: HOT.md (tylko gdy `hot.uzywam` = true)
 
-**Nie każdy user tego potrzebuje.** HOT.md ma sens, gdy ktoś pracuje w wielu równoległych
-wątkach/sesjach i potrzebuje szybko wejść w kontekst bez recapu. Jeśli user pracuje jednym
-wątkiem naraz, ten krok możesz pominąć całkowicie i przejść do routingu — mniej plików do
-utrzymania, mniejszy koszt stały każdej sesji. Ustalone raz przy onboardingu, nie zgaduj sam.
+Gdy `hot.uzywam` = false albo brak konfiguracji i brak pliku HOT.md: pomiń ten krok w całości.
+HOT.md ma sens przy wielu równoległych wątkach; przy jednym wątku naraz wystarczy dziennik.
 
-Gdy user HOT.md używa: to **nie jest** jednorazowy 10-liniowy pointer nadpisywany co sesję,
-to żyjący log pod kontrolą osobnego skilla `hot-slim` (budżet ustalony przy onboardingu,
-przycinanie to decyzja usera, nie automat tego skilla). Nadpisanie całego pliku kasuje realną,
-cross-linkowaną historię, na której opierają się kolejne sesje — nie rób tego.
+HOT.md (`hot.plik`, domyślnie `HOT.md` w korzeniu vaultu) to **żyjący log**, nie jednorazowy
+pointer nadpisywany co sesję. Nadpisanie całego pliku kasuje historię, na której opierają się
+kolejne sesje. Nie rób tego.
 
-1. **Nigdy nie nadpisuj całego pliku.** Edytuj istniejące linie in-place, dopisuj nowe.
-2. Na początku pliku zaktualizuj blok pointer — to jedyna część, którą faktycznie zastępujesz
-   w całości, reszta poniżej zostaje:
-   ```markdown
-   # HOT — pointer (RRRR-MM-DD)
+1. Aktualizuj tylko linie tematów z tej sesji; resztę zostaw bez zmian.
+2. Każda linia, którą dopisujesz albo zmieniasz, kończy się `(stan na RRRR-MM-DD)`. Linii, których
+   nie ruszasz, nie przepisuj tylko po to, żeby dodać datę.
+3. Kryterium, co trafia do HOT: wątki, do których wróci się w ciągu kilku dni. Reszta żyje
+   w dzienniku i notatkach docelowych.
+4. Wątek zamknięty przenieś do `hot.log_zamknietych` (utwórz przy pierwszej potrzebie).
+5. Po zapisie sprawdź rozmiar (`wc -c`). Powyżej `hot.budzet_znakow` (domyślnie 4500) **nie
+   przycinaj sam**: pokaż, które wątki są najdłuższe, i zapytaj od razu, co przenieść do logu.
+   Skill `hot-slim` robi ten pomiar dokładnie.
 
-   Ostatnia sesja: RRRR-MM-DD
-   Temat: [główny temat sesji, max 5 słów]
-   Następny krok: [konkretna akcja]
-   Otwarte: [2-3 tematy w toku, po przecinku]
-   Kontekst: [[RRRR-MM-DD]] | [[link do głównego projektu]]
-   ```
-3. Dla tematu poruszonego w tej sesji, który **już ma linię w HOT.md**: znajdź ją i
-   zaktualizuj w miejscu (np. dopisz `✅ ZAMKNIĘTE RRRR-MM-DD` na początku, zaktualizuj treść),
-   zamiast dopisywać duplikat.
-4. Dla **nowego** tematu wartego HOT: dopisz nową linię — jedno zdanie stanu + link do
-   notatki docelowej.
-5. **Kryterium, co w ogóle trafia do HOT:** decyzje i wątki, do których wróci się w ciągu
-   najbliższych dni/tygodni. Jednorazowe drobiazgi zostają tylko w dzienniku.
-6. Po zapisie sprawdź rozmiar pliku (np. `wc -c HOT.md`). Jeśli przekracza budżet — **nie
-   przycinaj sam**, zasygnalizuj Tomkowi, że warto odpalić `hot-slim` (to jego decyzja co
-   skrócić, nie tego skilla).
+## Krok 3: routing treści do notatek docelowych
 
-Nigdy nie duplikuj treści dziennika. Nigdy nie rób z HOT.md listy wszystkich decyzji — od tego jest dziennik.
+Dla każdego tematu z sesji zdecyduj, gdzie trafia, na podstawie mapy osoby.
 
-## Krok 3: Routing treści do właściwych notatek
+**Mapa: czytaj, nie zgaduj.** Ścieżka w `routing.mapa` (domyślnie `Meta/Mapa routingu.md`).
+To tabela `Temat | Folder docelowy`, własna dla każdego vaultu. Nie ma tu gotowej tabeli
+i nie wymyślaj jej. Brak mapy: zapytaj krótko o główne obszary (praca, projekty, dom, zdrowie,
+nauka) i zapisz odpowiedź jako tę notatkę, żeby nie pytać drugi raz.
 
-Dla każdego tematu poruszanego w sesji zdecyduj, gdzie trafia, na podstawie mapy folderów usera.
+Zasady routingu:
+1. Istnieje notatka na ten temat: **dopisz** sekcję z datą, nie twórz duplikatu.
+   Sprawdź najpierw skillem `vault-ask`, jeśli jest zainstalowany.
+2. Nie istnieje: utwórz w folderze z mapy. Temat nie pasuje do żadnego wiersza: zapytaj,
+   dokąd, i dopisz nowy wiersz do mapy.
+3. **Frontmatter od pierwszej wersji pliku**, gdy `frontmatter.wymagany` = true: pola z
+   `frontmatter.pola`, wartości `typ` i `status` z list w konfiguracji. `status` i `data` nigdy puste.
+4. Ustalenie, które sesja obaliła: zmień w starej notatce `status: obalone` i dopisz jedno zdanie,
+   dlaczego. Nie kasuj: historia decyzji zostaje, wyszukiwarka po prostu jej nie zwraca.
 
-### Mapa folderów: czytaj, nie zgaduj
+## Krok 4: odśwież indeks vault-embed (tylko gdy zainstalowany)
 
-**Nie ma tu gotowej tabeli — musi być własna, dla tego vaulta.** Sprawdź `Meta/Mapa routingu.md`
-(albo notatkę o tej samej roli, jeśli user nazwał ją inaczej przy onboardingu). Struktura tej
-notatki to zawsze tabela: `Temat → Folder docelowy`, dokładnie w formacie z przykładu niżej —
-tylko treść wierszy jest inna dla każdego usera, bo każdy ma inne obszary życia i pracy.
+Gdy w `skille` konfiguracji jest `vault-embed`, uruchom w tle:
 
-Przykład (nie kopiuj, to tylko pokazuje kształt, nie zawartość):
-
-```markdown
-| Temat | Folder docelowy |
-|-------|----------------|
-| <słowa kluczowe tematu A> | `<Folder A/>` |
-| <słowa kluczowe tematu B> | `<Folder B/>` |
+```bash
+~/.cache/second-brain-kit/venv/bin/python "<katalog skilla vault-embed>/kod/hybryda.py" --sprawdz --vault "<vault>"
 ```
 
-Jeśli notatki z mapą nie ma jeszcze w vaulcie: to znaczy, że onboarding nie doszedł do tego
-kroku albo user zaczął od zera. Zapytaj krótko, jakie ma główne obszary (praca, projekty
-poboczne, dom, zdrowie, itd.) i zapisz odpowiedź jako `Meta/Mapa routingu.md`, żeby przy
-kolejnym `zapisz` nie pytać drugi raz.
+Kod 0: indeks aktualny, koniec. Kod 1: odpal to samo z `--buduj` zamiast `--sprawdz`, w tle,
+bez czekania. Nie blokuj zamknięcia sesji na tym kroku. Katalog skilla vault-embed: w Claude
+Code zwykle `~/.claude/skills/vault-embed`, w aplikacji ścieżka z listy skilli. Inny katalog danych w
+`wyszukiwanie.katalog_danych`: podmień początek ścieżki do Pythona.
 
-### Logika routingu
+## Na koniec
 
-1. **Notatka istnieje** → dopisz nową sekcję z datą (`## Aktualizacja RRRR-MM-DD`) na końcu. Nie nadpisuj istniejącej treści.
-2. **Notatka nie istnieje, ale temat jest istotny** → utwórz nową notatkę w odpowiednim folderze. Nazwa pliku = temat (bez daty w nazwie, chyba że to spotkanie).
-3. **Temat jest drobny / jednorazowy** → nie routuj, zostaje tylko w dzienniku. Nie twórz notatki dla każdej drobnostki.
-4. **Temat nie pasuje do żadnego folderu** → `Inbox/`. Użyj tego rzadko — jeśli temat jest na tyle ważny żeby routować, to prawdopodobnie pasuje gdzieś w mapie.
+Jedno zdanie na krok: co powstało i gdzie. Bez podsumowania całej sesji drugi raz.
 
-Każdy zroutowany temat odnotuj w sekcji "Routing" dziennika.
+**Przypomnienie o aktualizacjach kitu, dobrowolne.** Tylko gdy `aktualizacje.tryb` =
+`przypominaj` i od `aktualizacje.ostatnie_sprawdzenie` minęło więcej niż `aktualizacje.co_ile_dni`
+(albo sprawdzenia nie było nigdy): dodaj jedną linię, np. „Minął miesiąc od sprawdzenia
+aktualizacji kitu. Powiedz «sprawdź aktualizacje», jeśli chcesz.” Nie sprawdzaj sieci, nie
+instaluj niczego. Tryb `na_zadanie`, `nigdy` albo brak konfiguracji: milcz w tym temacie.
