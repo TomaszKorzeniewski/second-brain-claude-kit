@@ -31,17 +31,23 @@ czegoś w konfiguracji, robisz to przez migrację opisaną we wpisie CHANGELOG, 
    - inaczej: `curl -fsSL https://raw.githubusercontent.com/<właściciel>/<repo>/main/CHANGELOG.md`
      do katalogu tymczasowego, adres z `aktualizacje.zrodlo`.
    - Brak sieci: powiedz wprost i zakończ część A.
-2. ```bash
+2. Ustal, co czeka na decyzję. Działa `python3`: uruchom
+   ```bash
    python3 "<katalog tego skilla>/kod/przeglad.py" --vault "<vault>" --zmiany "<CHANGELOG.md>"
    ```
    Wynik to JSON: `oczekujace` (wpisy do decyzji) i `nowe_skille_do_rozwazenia`.
+   Bez Pythona zrób to samo, czytając: wpisy CHANGELOG nowsze niż `wersja_kitu`, których `id`
+   nie ma w `aktualizacje.wdrozone` ani `aktualizacje.pominiete`, a `dotyczy` obejmuje skill
+   z listy `skille` (albo `wszystkie`).
 3. Pokaż **maksymalnie 5 wpisów**, najnowsze najpierw. Każdy w jednej linii: tytuł, zysk jednym
    zdaniem, czy wymaga decyzji albo migracji. Resztę streść liczbą („i 3 drobniejsze”).
 4. Zapytaj o każdy wpis: **wdrażam / pomijam na stałe / później**. Jedno pytanie wielokrotnego
    wyboru, nie pięć osobnych.
 5. Nowe skille, których user nie ma: jedno zdanie, co dają. Bez naciskania.
 
-## Część B: przegląd dopasowania
+## Część B: przegląd dopasowania (wersja zaawansowana, wymaga `python3`)
+
+Bez Pythona: powiedz jednym zdaniem, że przegląd liczy sygnały skryptem, i pomiń tę część.
 
 ```bash
 python3 "<katalog tego skilla>/kod/przeglad.py" --vault "<vault>" --dopasowanie
@@ -65,8 +71,8 @@ dopisanie wyjątku do konfiguracji zamiast dyskusji.
 Kolejność na każdą zmianę:
 1. **Rollback najpierw.** Skopiuj obecną wersję dotkniętego skilla i konfiguracji do
    `<vault>/.kit/kopie/RRRR-MM-DD/`. Powiedz jednym zdaniem, jak wrócić (skopiować z powrotem).
-2. **Pliki skilla:** z aktualnego repo (`folder_repo` albo pobrany zip gałęzi `main`) uruchom
-   `python3 narzedzia/zbuduj.py`, potem zależnie od `instalacja.sposob`:
+2. **Pliki skilla:** z aktualnego repo (`folder_repo` albo pobrany zip gałęzi `main`), gotowe
+   paczki leżą w `paczki/`, nic nie trzeba budować. Zależnie od `instalacja.sposob`:
    - `claude-code`: skopiuj `skille/<nazwa>/` do `instalacja.folder_skilli` (zwykle `~/.claude/skills/`),
    - `aplikacja`: podaj ścieżkę `paczki/<nazwa>.zip` i dokładne kroki: Settings, Capabilities,
      Skills, usuń starą wersję, Upload skill, wskaż zip. Tego nie zrobisz za usera.
@@ -77,7 +83,8 @@ Kolejność na każdą zmianę:
 4. **Zapisz decyzje w konfiguracji:** id wdrożonych do `aktualizacje.wdrozone`, pominiętych do
    `aktualizacje.pominiete` („później” nie zapisujesz nigdzie), `ostatnie_sprawdzenie` na dziś.
    `wersja_kitu` podnieś do najnowszej dopiero, gdy w `oczekujace` nie zostało nic poza „później”.
-5. Sprawdź, że działa: uruchom skrypt zaktualizowanego skilla raz na vaulcie usera.
+5. Sprawdź, że działa: skill ma skrypt i działa `python3`, uruchom go raz na vaulcie usera;
+   skill bez skryptu, poproś usera o jedno wywołanie (np. „zapisz”) i obejrzyj wynik.
 
 ## Tryb przypomnień
 

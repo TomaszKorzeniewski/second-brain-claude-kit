@@ -30,7 +30,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import bm25_pl
 import kit_konfig
 
-ZNACZNIK = "<!-- wygenerowane: indeks.py (second-brain-claude-kit) -->"
+ZNACZNIK = "<!-- spis treści kitu (second-brain-claude-kit) -->"
+# Starszy znacznik (2.1.0): plik z nim też jest nasz i wolno go przebudować.
+ZNACZNIKI = (ZNACZNIK, "<!-- wygenerowane: indeks.py (second-brain-claude-kit) -->")
 DL_OPISU = 110
 
 
@@ -88,8 +90,8 @@ def zloz(grupy):
     n = sum(len(v) for v in grupy.values())
     linie = ["---", "typ: mapa", "status: aktualne", "data: %s" % dzis, "tagi: [indeks]", "---",
              ZNACZNIK, "# Spis treści vaultu", "",
-             "Generowany automatycznie (skill vault-ask, `indeks.py`); ręczne zmiany znikną przy "
-             "następnym generowaniu. Opis notatki zmieniasz polem `opis` w jej frontmatterze.",
+             "Mapa notatek: jedna linia na notatkę. Na co dzień dopisuje ją Claude przy zapisie, skrypt "
+             "`indeks.py` składa ją od zera. Opis notatki zmieniasz polem `opis` w jej frontmatterze.",
              "", "%d notatek, stan na %s." % (n, dzis), ""]
     for grupa in sorted(grupy, key=lambda g: (g == "(korzeń vaultu)", g.lower())):
         linie.append("## %s (%d)" % (grupa, len(grupy[grupa])))
@@ -128,7 +130,8 @@ def main():
     cel = os.path.join(vault, plik)
     if os.path.exists(cel):
         with open(cel, encoding="utf-8", errors="ignore") as f:
-            if ZNACZNIK not in f.read(2000):
+            poczatek = f.read(2000)
+            if not any(z in poczatek for z in ZNACZNIKI):
                 sys.exit("STOP: %s istnieje i nie jest wygenerowany przez kit (to Twoja praca). Nie nadpisuję. "
                          "Ustaw inną nazwę w konfiguracji: indeks.plik." % plik)
     os.makedirs(os.path.dirname(cel) or vault, exist_ok=True)

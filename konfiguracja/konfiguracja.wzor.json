@@ -1,6 +1,6 @@
 {
   "_opis": "Twoje dopasowanie kitu. Ten plik żyje w vaulcie jako .kit/konfiguracja.json i NIGDY nie jest nadpisywany przez aktualizację skilli. Tworzy go rozmowa startowa, zmienia skill kit-aktualizacja albo Ty ręcznie. Klucze zaczynające się od _ to komentarze.",
-  "wersja_kitu": "2.1.0",
+  "wersja_kitu": "2.2.0",
   "utworzono": "RRRR-MM-DD",
 
   "_onboarding": "Postęp rozmowy startowej. Dzięki temu przerwana rozmowa wraca do właściwego bloku, a skończona otwiera menu zamiast wywiadu od nowa.",
@@ -21,9 +21,10 @@
     "jezyk": "pl"
   },
 
-  "_instalacja": "Jak instalujesz skille. sposob: aplikacja (Claude Desktop/Cowork, wgrywasz zip w Settings) albo claude-code (folder ~/.claude/skills). Czyta to kit-aktualizacja.",
+  "_instalacja": "Jak instalujesz skille. sposob: aplikacja (Claude Desktop/Cowork, wgrywasz zip w Settings) albo claude-code (folder ~/.claude/skills). python: czy działa python3; false = sama podstawa kitu, bez skryptów, i to jest w pełni działający kit.",
   "instalacja": {
     "sposob": "aplikacja",
+    "python": false,
     "folder_skilli": "~/.claude/skills"
   },
 
@@ -60,7 +61,7 @@
     "tryb": "wspolnie"
   },
 
-  "_indeks": "Spis treści vaultu generowany skryptem (vault-ask, indeks.py). Opłaca się do ok. 250 notatek.",
+  "_indeks": "Spis treści vaultu: jedna linia na notatkę. Na co dzień dopisuje ją `zapisz`, bez skryptu; przy dużym vaultcie można go złożyć od zera skryptem (vault-ask, indeks.py). Opłaca się do ok. 250 notatek.",
   "indeks": {
     "uzywam": false,
     "plik": "index.md",
@@ -92,9 +93,9 @@
     "fakty": []
   },
 
-  "_zapis": "Kiedy `zapisz` ma sam zaproponować zapis. procent_kontekstu to próg, przy którym model proponuje zapis, zanim zacznie się kompaktowanie.",
+  "_zapis": "proponuj: true = `zapisz` sam proponuje zapis jedną linijką po każdym ustalonym wyniku (decyzja, liczba, działające rozwiązanie), żeby vault rósł z każdą rozmową; false = zapis tylko na prośbę.",
   "zapis": {
-    "procent_kontekstu": 55,
+    "proponuj": true,
     "sekcja_czego_nie_robic": true
   },
 

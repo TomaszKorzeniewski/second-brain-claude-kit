@@ -5,7 +5,9 @@ description: "Higiena vaultu Obsidian bez modeli AI: martwe linki, sieroty, niea
 
 # vault-lint: higiena vaultu (raport, bez zmian)
 
-Czysty Python, biblioteka standardowa, zero tokenów na samo sprawdzenie.
+**Wersja zaawansowana, wymaga `python3`** (biblioteka standardowa, nic więcej), zero tokenów na
+samo sprawdzenie. Python nie działa: powiedz to jednym zdaniem i nie przeglądaj vaultu ręcznie,
+bo czytanie wszystkich notatek kosztowałoby więcej, niż ten przegląd jest wart.
 
 ## Jak uruchomić (dla Claude)
 

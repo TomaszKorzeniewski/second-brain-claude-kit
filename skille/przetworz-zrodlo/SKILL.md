@@ -63,8 +63,8 @@ skill `vault-ask` (szuka też po `aliases`), a przy ogólnym temacie najpierw sp
 
 ## Krok 5: spis treści i log
 
-1. Spis treści istnieje (`indeks.plik`): odśwież go skryptem skilla `vault-ask`
-   (`kod/indeks.py --zapisz`). Nie edytuj spisu ręcznie.
+1. Spis treści istnieje (`indeks.plik`): dopisz linię każdej nowej strony wg kroku 4a skilla
+   `zapisz` (`- [[Nazwa]] (typ): opis w jednym zdaniu`). Bez skryptu, bez przepisywania całego pliku.
 2. Dopisz do dzisiejszego wpisu dziennika (format ze skilla `zapisz`):
    ```markdown
    ## [RRRR-MM-DD] źródło | <tytuł źródła>

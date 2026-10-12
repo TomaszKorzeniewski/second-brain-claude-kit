@@ -9,7 +9,8 @@ Trzy kroki, w tej kolejności:
      zero danych osobowych. Wzorce ogólne są niżej; prywatne słowa (imię, nazwy własnych
      folderów) dopisz do `narzedzia/.zakazane-lokalne.txt`, plik jest w .gitignore.
   3. Paczki. `paczki/<skill>.zip` do wgrania w aplikacji Claude (Settings, Skills, Upload).
-     Folder `paczki/` jest w .gitignore, bo odtwarza się tym skryptem.
+     Folder `paczki/` jest w repo, żeby user nie musiał niczego budować ani mieć Pythona.
+     Po każdej zmianie w `skille/` uruchom ten skrypt i commituj paczki razem ze zmianą.
 
 Użycie:
     python3 narzedzia/zbuduj.py              # wszystkie trzy kroki

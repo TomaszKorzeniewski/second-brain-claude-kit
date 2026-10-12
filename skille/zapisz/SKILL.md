@@ -1,12 +1,21 @@
 ---
 name: zapisz
-description: "Zamknięcie sesji: wpis do dziennika, aktualizacja HOT.md (jeśli go używasz) i routing treści do właściwych notatek w vaulcie Obsidian. Użyj, gdy user mówi: 'zapisz', 'zamknij sesję', 'koniec sesji', 'save', 'zapisz stan', 'zamykamy', 'koniec na dziś', 'to tyle'. Zaproponuj zapis sam, gdy sesja jest długa albo wielotematyczna, nie czekaj na komendę."
+description: "Zapis wiedzy z rozmowy do vaultu Obsidian, żeby drugi mózg rósł z każdą sesją: dziennik, HOT.md (jeśli używany), notatki docelowe i spis treści. Dwa tryby. Pełny zapis, gdy user mówi: 'zapisz', 'zamknij sesję', 'koniec sesji', 'save', 'zapisz stan', 'zamykamy', 'koniec na dziś', 'to tyle'. Mikrozapis, czyli jedna pozycja do jednej notatki, gdy user przyjmie propozycję zapisu. PROAKTYWNIE: po każdym ustalonym wyniku (decyzja, liczba, działające rozwiązanie, obalona hipoteza, dobra analiza), także po pierwszej albo drugiej wymianie, zaproponuj zapis jedną linijką, nie czekaj na prośbę. Działa bez instalowania czegokolwiek."
 ---
 
-# zapisz: zamknięcie sesji
+# zapisz: wiedza z rozmowy trafia do vaultu
 
-Jeden command, do czterech kroków: dziennik, HOT.md, routing treści, odświeżenie indeksu.
-Który krok działa i jak, mówi konfiguracja osoby, nie ten plik.
+**Po co to jest.** Vault ma rosnąć z każdą rozmową: decyzja, liczba, działające rozwiązanie albo
+dobra analiza, która zostaje tylko w historii czatu, przepada przy następnej sesji. Ten skill
+pilnuje, żeby nie przepadła, i robi to sam, bez proszenia. Im więcej trafi do vaultu, tym mniej
+trzeba tłumaczyć Claude od nowa i tym mniej tokenów kosztuje każda kolejna rozmowa.
+
+**Bez skryptów.** Wszystko poniżej to zwykły odczyt i zapis plików Markdown. Nic nie trzeba
+instalować. Jedyny krok ze skryptem (krok 4, indeks wektorowy) dotyczy tylko osób z wersją
+zaawansowaną i bez niej jest pomijany.
+
+Dwa tryby: **mikrozapis** (jedna pozycja do jednej notatki, w trakcie rozmowy) i **pełny zapis**
+(kroki 1 do 4, na koniec sesji). Który krok działa i jak, mówi konfiguracja osoby, nie ten plik.
 
 ## Krok 0: wczytaj konfigurację (zawsze pierwszy)
 
@@ -21,16 +30,54 @@ Który krok działa i jak, mówi konfiguracja osoby, nie ten plik.
 
 Pisz w języku z `osoba.jezyk` (domyślnie język, w którym pisze user).
 
-## Kiedy zapisywać: wcześnie, nie przy kompaktowaniu
+## Kiedy zapisywać: proponuj sam, nie czekaj na „zapisz”
 
-Zapis zrobiony wcześnie bije zapis zrobiony kompletnie. Kompaktowanie odpala się przy pełnym
-kontekście, czyli wtedy, gdy model widzi już własne streszczenia zamiast faktów, i zapis
-robiony w tym momencie utrwala zniekształcenia, których nie widać.
+Zapis zrobiony wcześnie bije zapis zrobiony kompletnie. Pod koniec długiej rozmowy model widzi
+już własne streszczenia zamiast faktów, a zapis robiony wtedy utrwala zniekształcenia, których
+nie widać. Model nie widzi też, ile kontekstu zużył, więc reguła „zapisz przy połowie” w praktyce
+nie działa. Działa za to propozycja po każdym wyniku.
 
-1. Próg: około `zapis.procent_kontekstu` okna kontekstu (domyślnie 55%). Nie czekaj na
-   komunikat o kompaktowaniu.
-2. Naturalne momenty: domknięty wątek, zmiana tematu, koniec dnia na temacie.
-3. Nie przerywaj wdrożenia w połowie: dokończ mikrokrok, potem zapisz.
+Wyłącznik: `zapis.proponuj` = false (domyślnie true). Wtedy zapisujesz tylko na prośbę.
+
+### Propozycja po ustalonym wyniku (od pierwszej wymiany)
+
+Gdy w odpowiedzi pada wynik, którego user szukał, dopisz na końcu tej odpowiedzi **jedną linijkę**.
+Wynik to: decyzja z uzasadnieniem, zmierzona albo policzona liczba, działające rozwiązanie
+(komenda, ustawienie, adres, procedura), obalona hipoteza albo odrzucona ścieżka, nowa reguła
+współpracy, porównanie albo analiza, o którą user prosił.
+
+Format, zawsze ten sam, żeby dało się odpowiedzieć jednym słowem:
+
+```
+💾 Zapisać? <co, max 12 słów> → <gdzie: notatka albo HOT.md> (tak / nie / gdzie indziej)
+```
+
+Zasady:
+1. Nie proponuj drobiazgów: odpowiedź na jednorazowe pytanie, rzecz już zapisana, coś, co
+   łatwo odtworzyć z pliku. Lepiej jedna trafna propozycja na sesję niż pięć pustych.
+2. Najwyżej jedna propozycja na odpowiedź. Kilka wyników naraz: jedna linijka z listą po przecinku.
+3. Wynik odrzucony („nie”) nie wraca w tej sesji.
+4. User nie odpowiedział i pisze dalej o czym innym: nie ponawiaj, wynik trafi do pełnego zapisu.
+5. Propozycja to pytanie, nie akcja. Bez „tak” nic nie zapisujesz.
+6. Miejsce wskazuj konkretnie, wg mapy routingu (krok 3). Nie wiesz, gdzie: zaproponuj notatkę
+   i folder, user poprawi jednym słowem.
+
+**„Tak” = mikrozapis**, nie pełne zamknięcie sesji:
+1. Jedna pozycja do jednej notatki docelowej wg kroku 3 (dopisz sekcję z datą albo utwórz
+   notatkę z frontmatterem).
+2. Nowa notatka i jest spis treści: dopisz jej linię (krok 4a).
+3. Wątek będzie żył dłużej niż kilka dni i `hot.uzywam` = true: zaktualizuj jego linię w HOT.md
+   (zasady kroku 2).
+4. Jedna linijka do dzisiejszego wpisu dziennika: `- [[Notatka]]: co dopisano` (utwórz wpis
+   z szablonu, jeśli go nie ma).
+5. Potwierdź jednym zdaniem: co i gdzie. Wracasz do tematu rozmowy.
+
+### Pełny zapis: kiedy zaproponować
+
+Domknięty wątek, zmiana tematu, koniec dnia na temacie, rozmowa wyraźnie długa (dziesiątki
+wymian albo kilka tematów naraz). Format:
+`💾 Robię pełny zapis (dziennik, notatki, spis treści)? (tak / nie)`.
+Nie przerywaj pracy w połowie: dokończ bieżący krok, potem zaproponuj.
 
 ## Krok 1: dziennik
 
@@ -125,21 +172,47 @@ Zasady routingu:
 6. Ustalenie, które sesja obaliła: zmień w starej notatce `status: obalone` i dopisz jedno zdanie,
    dlaczego. Nie kasuj: historia decyzji zostaje, wyszukiwarka po prostu jej nie zwraca.
 
-## Krok 4: odśwież indeks vault-embed (tylko gdy zainstalowany)
+## Krok 4: spis treści i indeks
 
-Gdy w `skille` konfiguracji jest `vault-embed`, uruchom w tle:
+### 4a. Spis treści (gdy `indeks.uzywam` = true), bez skryptu
+
+Spis treści (`indeks.plik`, domyślnie `index.md` w korzeniu vaultu) to mapa vaultu dla Claude
+i dla człowieka: przy pytaniu ogólnym czyta się jeden plik zamiast kilkunastu. Prowadzisz go
+zwykłą edycją, linia po linii, tylko dla notatek ruszonych w tej sesji:
+1. Nowa notatka: dopisz linię pod nagłówkiem jej folderu (brak nagłówka, dodaj go):
+   `- [[Nazwa notatki]] (typ): <opis w jednym zdaniu>`. Opis z pola `opis` we frontmatterze; brak pola,
+   napisz zdanie sam i wpisz je też jako `opis` do notatki.
+2. Notatka dostała `status: obalone` albo `archiwum`: usuń jej linię.
+3. Zmieniona nazwa: popraw link w linii.
+4. Nie przepisuj całego pliku i nie czytaj przy tym innych notatek. To ma kosztować kilka linii.
+5. Pliku jeszcze nie ma: utwórz go tak (znacznik w komentarzu pozwala skryptowi z wersji
+   zaawansowanej przebudować spis od zera), potem dopisuj tylko nowe notatki:
+   ```markdown
+   ---
+   typ: mapa
+   status: aktualne
+   data: RRRR-MM-DD
+   tagi: [indeks]
+   ---
+   <!-- spis treści kitu (second-brain-claude-kit) -->
+   # Spis treści vaultu
+
+   Mapa notatek: jedna linia na notatkę. Opis notatki zmieniasz polem `opis` w jej frontmatterze.
+   ``` Starych nie dociągaj hurtem; przy setkach notatek to zrobi skrypt z wersji
+   zaawansowanej (`vault-ask`, `kod/indeks.py --zapisz`), o ile user go ma.
+
+### 4b. Indeks wektorowy (tylko wersja zaawansowana, gdy w `skille` jest `vault-embed`)
+
+Uruchom w tle:
 
 ```bash
 ~/.cache/second-brain-kit/venv/bin/python "<katalog skilla vault-embed>/kod/hybryda.py" --sprawdz --vault "<vault>"
 ```
 
-Spis treści (`indeks.plik`) istnieje? Odśwież go też: skrypt `kod/indeks.py --zapisz` ze skilla
-`vault-ask`, w tle.
-
 Kod 0: indeks aktualny, koniec. Kod 1: odpal to samo z `--buduj` zamiast `--sprawdz`, w tle,
 bez czekania. Nie blokuj zamknięcia sesji na tym kroku. Katalog skilla vault-embed: w Claude
 Code zwykle `~/.claude/skills/vault-embed`, w aplikacji ścieżka z listy skilli. Inny katalog danych w
-`wyszukiwanie.katalog_danych`: podmień początek ścieżki do Pythona.
+`wyszukiwanie.katalog_danych`: podmień początek ścieżki do Pythona. Brak `vault-embed`: pomiń 4b.
 
 ## Na koniec
 

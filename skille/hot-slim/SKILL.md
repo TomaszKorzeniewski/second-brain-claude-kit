@@ -5,6 +5,9 @@ description: "Kontrola budżetu HOT.md w vaulcie Obsidian (zero tokenów, bez mo
 
 # hot-slim: kontrola budżetu HOT.md
 
+**Wersja zaawansowana, wymaga `python3`.** Bez niego wystarczy to, co robi `zapisz`: sprawdza
+rozmiar HOT.md po zapisie i pyta, co przenieść do logu zamkniętych.
+
 HOT.md to akumulator wątków między sesjami: jeden blok to jeden wątek, dopisywany, nigdy
 nadpisywany w całości. Ten skill mierzy, czy plik i wątki mieszczą się w budżecie, i **tylko
 raportuje**.

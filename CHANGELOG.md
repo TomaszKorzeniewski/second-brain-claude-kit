@@ -4,6 +4,29 @@ Każda zmiana ma własny wpis, żeby dało się ją wybrać albo pominąć osobn
 `kit-aktualizacja` czyta ten plik). Pola `id`, `dotyczy`, `zysk`, `decyzja`, `migracja` są
 czytane przez skrypt, więc trzymaj ich format. Najnowsza wersja na górze.
 
+## 2.2.0 (2026-10-12)
+
+### Zapis proponowany po każdym wyniku
+- id: 2.2.0-propozycja-zapisu
+- dotyczy: zapisz
+- zysk: Claude sam proponuje zapis jedną linijką, gdy pada decyzja, liczba albo działające rozwiązanie, więc vault rośnie z każdą rozmową, a nie tylko wtedy, gdy pamiętasz o „zapisz”; na „tak” robi mikrozapis do jednej notatki
+- decyzja: nie
+- migracja: klucz `zapis.proponuj` = true w konfiguracji; stary `zapis.procent_kontekstu` można usunąć, nie jest już czytany
+
+### Kit działa bez Pythona
+- id: 2.2.0-bez-skryptow
+- dotyczy: wszystkie
+- zysk: podstawa (zapisz, vault-hot, przetworz-zrodlo, vault-ask) to same instrukcje, nic nie trzeba instalować; gotowe paczki leżą w `paczki/`; skrypty zostają jako wersja zaawansowana dla chętnych
+- decyzja: nie
+- migracja: klucz `instalacja.python` (true, jeśli działa `python3`)
+
+### Spis treści prowadzony przy zapisie, bez skryptu
+- id: 2.2.0-spis-bez-skryptu
+- dotyczy: zapisz, przetworz-zrodlo, vault-ask
+- zysk: nowa notatka od razu dostaje linię w spisie treści, bez odpalania skryptu; skrypt `indeks.py` składa spis od zera tylko przy dużym vaultcie
+- decyzja: nie
+- migracja: nie
+
 ## 2.1.0 (2026-09-25)
 
 ### Przetwarzanie źródeł wg wzorca LLM Wiki
