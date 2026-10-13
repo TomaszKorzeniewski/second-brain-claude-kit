@@ -195,7 +195,7 @@ roboczym poza vaultem (np. `.second-brain-kit`): `~/.cache` w piaskownicy Cowork
 **Decyzja 7, vault-lint (wersja zaawansowana).** Tylko przy `instalacja.python` = true, jako
 przegląd raz na tydzień albo dwa. Bez Pythona pomiń bez komentarza.
 
-**Decyzja 8, źródła i spis treści (wzorzec LLM Wiki Karpathy'ego).** Czytam artykuły, PDF-y,
+**Decyzja 8, źródła i spis treści.** Czytam artykuły, PDF-y,
 książki, transkrypcje i chcę, żeby wiedza z nich się kumulowała? Zaproponuj `przetworz-zrodlo`:
 źródło zostaje nietknięte, a wiedza trafia do stron o osobach, firmach, pojęciach. Zapytaj, czy
 źródła mają mieć jeden folder (`zrodla.folder`), czy zostają tam, gdzie są. Vault do ok. 250

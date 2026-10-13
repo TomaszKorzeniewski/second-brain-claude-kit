@@ -226,7 +226,7 @@ def uklad(vault, konf, pliki, pominiete):
                   len(bardzo_dlugie), ", ".join(r for r, _ in sorted(bardzo_dlugie, key=lambda x: -x[1])[:3])),
               "Claude czyta część, której potrzebuje, zamiast całości")
 
-    # 2. Spis treści (index.md) ze wzorca Karpathy'ego: opłaca się w mniejszych vaultach.
+    # 2. Spis treści (index.md): opłaca się w mniejszych vaultach.
     plik_ind = kit_konfig.wartosc(konf, "indeks.plik", "index.md")
     ma_indeks = os.path.exists(os.path.join(vault, plik_ind))
     if 20 <= n <= 250 and not ma_indeks:
@@ -253,7 +253,7 @@ def uklad(vault, konf, pliki, pominiete):
     if len(foldery_zrodel) >= 3 and not folder_zr:
         dodaj("uklad-zrodla", "trzymaj źródła (artykuły, PDF-y) w jednym folderze, osobno od notatek",
               "źródła leżą w %d folderach: %s" % (len(foldery_zrodel), ", ".join(sorted(foldery_zrodel)[:5])),
-              "wzorzec LLM Wiki: źródło zostaje nietknięte, wiedza z niego trafia do notatek; "
+              "źródło zostaje nietknięte, wiedza z niego trafia do notatek; "
               "wyszukiwanie nie miesza surowego artykułu z Twoimi wnioskami")
 
     # 4. Załączniki: Obsidian bez stałego folderu wrzuca obrazy obok notatek.

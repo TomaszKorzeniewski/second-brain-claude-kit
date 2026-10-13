@@ -11,7 +11,7 @@ Cztery klasy znalezisk:
   4. Szkice         : notatka zawiera marker TODO/SZKIC/"do uzupełnienia" na starcie treści
                        lub w tytule.
   6. Pojęcia bez strony: martwy link powtarzający się w co najmniej 2 notatkach, czyli temat,
-                       który wraca i zasługuje na własną stronę (wzorzec LLM Wiki).
+                       który wraca i zasługuje na własną stronę (strona do założenia).
   5. Sprzeczności   : ta sama "znana wartość" (np. budżet HOT.md w znakach) opisana różnymi
                        liczbami w różnych notatkach. Lista sprawdzanych faktów jest w
                        FACT_PATTERNS niżej, celowo krótka, dopisuj kolejne wzorce w miarę
@@ -345,7 +345,7 @@ def do_report(vault: str, max_examples: int, fix_safe: bool, apply_fix: bool):
         print("  (brak, ale sprawdzanych wzorców jest tylko kilka, patrz FACT_PATTERNS)")
     print()
 
-    # 6. Pojęcia bez własnej strony (ze wzorca LLM Wiki Karpathy'ego): ten sam martwy link
+    # 6. Pojęcia bez własnej strony: ten sam martwy link
     # w co najmniej dwóch różnych notatkach to nie literówka, tylko temat, który wraca
     # i nie ma jeszcze strony. To propozycja nowej notatki, nie błąd do naprawy.
     zrodla_celu = {}

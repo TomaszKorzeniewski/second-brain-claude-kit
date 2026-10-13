@@ -1,12 +1,11 @@
 ---
 name: przetworz-zrodlo
-description: "Wchłania źródło (artykuł, PDF, transkrypcję, notatkę ze spotkania, rozdział książki) do vaultu Obsidian wg wzorca LLM Wiki: źródło zostaje nietknięte, a wiedza z niego trafia do stron o osobach, firmach, pojęciach i tematach, z linkami, aliasami i oznaczonymi sprzecznościami. Użyj, gdy user mówi 'przetwórz', 'dodaj to źródło', 'wchłoń', 'ingest', 'wrzuć to do wiki', albo wkleja link lub plik do przyswojenia."
+description: "Wchłania źródło (artykuł, PDF, transkrypcję, notatkę ze spotkania, rozdział książki) do vaultu Obsidian: źródło zostaje nietknięte, a wiedza z niego trafia do stron o osobach, firmach, pojęciach i tematach, z linkami, aliasami i oznaczonymi sprzecznościami. Użyj, gdy user mówi 'przetwórz', 'dodaj to źródło', 'wchłoń', 'ingest', 'wrzuć to do wiki', albo wkleja link lub plik do przyswojenia."
 ---
 
 # przetworz-zrodlo: źródło do wiki, wiedza się kumuluje
 
-Wzorzec z „LLM Wiki” Andreja Karpathy'ego: zamiast szukać w surowych dokumentach przy każdym
-pytaniu, raz przetwarzasz źródło i wpisujesz wiedzę do trwałych, połączonych stron. Kolejne
+Zamiast szukać w surowych dokumentach przy każdym pytaniu, raz przetwarzasz źródło i wpisujesz wiedzę do trwałych, połączonych stron. Kolejne
 źródła te strony wzbogacają, a nie tworzą obok nich nowych stosów.
 
 Trzy warstwy, ale **w układzie usera, nie narzuconym**:

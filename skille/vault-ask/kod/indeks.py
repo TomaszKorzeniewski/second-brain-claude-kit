@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Spis treści vaultu (index.md) generowany bez tokenów, ze wzorca LLM Wiki Karpathy'ego.
+"""Spis treści vaultu (index.md) generowany bez tokenów.
 
 Po co to istnieje. Przy pytaniu ogólnym („co mam o remoncie?”) Claude czyta jeden plik ze
-spisem zamiast przeszukiwać i otwierać kilkanaście notatek. Karpathy opisuje, że taki indeks
+spisem zamiast przeszukiwać i otwierać kilkanaście notatek. Taki spis
 wystarcza do ok. setek stron bez embeddingu. Tu spis składa skrypt, nie model, więc jego
 utrzymanie nie kosztuje ani jednego tokena.
 

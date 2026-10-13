@@ -29,7 +29,7 @@ czytane przez skrypt, więc trzymaj ich format. Najnowsza wersja na górze.
 
 ## 2.1.0 (2026-09-25)
 
-### Przetwarzanie źródeł wg wzorca LLM Wiki
+### Przetwarzanie źródeł do stron wiedzy
 - id: 2.1.0-przetworz-zrodlo
 - dotyczy: przetworz-zrodlo
 - zysk: artykuł, PDF albo transkrypcja raz przetworzone zasilają strony o osobach, firmach i pojęciach, więc wiedza się kumuluje, zamiast być szukana od nowa przy każdym pytaniu

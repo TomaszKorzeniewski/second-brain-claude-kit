@@ -2,6 +2,8 @@
 
 *(znane też jako **VALTOS**, jeśli wolisz krótszą nazwę)*
 
+Moja propozycja drugiego mózgu w Obsidianie, zbudowana z myślą o Claude.
+
 Osiem umiejętności (skilli) do Claude i jedna rozmowa startowa, które razem zamieniają
 Obsidiana w drugi mózg prowadzony przez Claude: dziennik, który pisze się sam, kontekst,
 który wraca między sesjami bez recapu, wyszukiwanie po notatkach bez wczytywania wszystkiego
@@ -60,7 +62,7 @@ skille/
   hot-slim/          kontrola budżetu HOT.md, żeby nie spuchł
   vault-lint/        przegląd higieny: martwe linki, sieroty, sprzeczności
   kit-aktualizacja/  nowe wersje, przegląd dopasowania i doradztwo układu, tylko gdy chcesz
-  przetworz-zrodlo/  źródło (artykuł, PDF, transkrypcja) do stron wiedzy, wzorzec LLM Wiki
+  przetworz-zrodlo/  źródło (artykuł, PDF, transkrypcja) do stron wiedzy, wiedza się kumuluje
 
 paczki/                               gotowe zipy do wgrania w aplikacji, nic nie budujesz
 konfiguracja/konfiguracja.wzor.json   wzór ustawień z opisem każdego pola
@@ -90,26 +92,26 @@ Twoich notatek do żadnego API poza samym Claude.
 Zajmuje to 30 do 45 minut, jednym ciągiem. Przerwana rozmowa wraca do bloku, na którym
 skończyliście, bo postęp zapisuje się w konfiguracji.
 
-## Skąd to się wzięło
+## Jak to działa
 
-Kit realizuje wzorzec [LLM Wiki Andreja Karpathy'ego](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f):
-zamiast za każdym razem szukać w surowych dokumentach, Claude raz przetwarza źródło i wpisuje
-wiedzę do trwałych, połączonych notatek, które rosną z każdym źródłem i pytaniem.
+Moja propozycja drugiego mózgu dedykowanego dla Claude. Zamiast za każdym razem szukać
+w surowych dokumentach albo tłumaczyć wszystko od nowa, Claude raz przetwarza źródło czy wynik
+rozmowy i wpisuje wiedzę do trwałych, połączonych notatek, które rosną z każdym źródłem i pytaniem.
 
-| wzorzec LLM Wiki | w kicie |
+| element | w kicie |
 |---|---|
 | surowe źródła, tylko do czytania | źródła w Twoim folderze, `przetworz-zrodlo` ich nie zmienia |
-| wiki pisane przez LLM | strony wiedzy w folderach z Twojej mapy routingu |
-| schemat (CLAUDE.md) | konfiguracja kitu, mapa routingu, Twoje instrukcje |
-| ingest | `przetworz-zrodlo` (źródła) i `zapisz` (wnioski z rozmów) |
-| query, dobre odpowiedzi wracają do wiki | `vault-ask`, `vault-embed`, propozycja zapisu syntezy |
-| lint | `vault-lint`, w tym „pojęcia bez własnej strony” |
-| index.md i log.md | spis treści składany skryptem (zero tokenów), dziennik z nagłówkami `## [data] rodzaj \| tytuł` |
+| notatki wiedzy pisane przez Claude | strony w folderach z Twojej mapy routingu |
+| zasady | konfiguracja kitu, mapa routingu, Twoje instrukcje |
+| wchłanianie wiedzy | `przetworz-zrodlo` (źródła) i `zapisz` (wnioski z rozmów) |
+| pytania, dobre odpowiedzi wracają do vaultu | `vault-ask`, `vault-embed`, propozycja zapisu syntezy |
+| porządki | `vault-lint`, w tym „pojęcia bez własnej strony” |
+| spis treści i log | spis treści prowadzony przy zapisie, dziennik z nagłówkami `## [data] rodzaj \| tytuł` |
 
-Od siebie kit dokłada to, czego wzorzec celowo nie określa: wyszukiwanie po polsku bez tokenów,
-ochronę stron przejrzanych przez Ciebie (`sprawdzone: true`), sprzeczności oznaczane zamiast
-rozstrzyganych po cichu i dopasowanie do Twojego układu. Podobne podejście w formie pluginu
-Obsidiana: [LLM Wiki (karpathywiki)](https://community.obsidian.md/plugins/karpathywiki).
+Do tego: wyszukiwanie po polsku, ochrona stron przejrzanych przez Ciebie (`sprawdzone: true`),
+sprzeczności oznaczane zamiast rozstrzyganych po cichu i dopasowanie do Twojego układu.
+Podobne podejścia, jeśli chcesz porównać: [LLM Wiki](https://gist.github.com/karpathy/442a6bf555914893e9891c11519de94f)
+i plugin Obsidiana [karpathywiki](https://community.obsidian.md/plugins/karpathywiki).
 
 ## Twój układ, nie mój
 

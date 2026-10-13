@@ -55,7 +55,7 @@
     "log_zamknietych": "Meta/HOT - log zamkniętych wątków.md"
   },
 
-  "_zrodla": "Skill przetworz-zrodlo (wzorzec LLM Wiki). folder: gdzie leżą surowe źródła, tylko do czytania; pusty = źródła tam, gdzie je trzymasz. tryb: wspolnie (omawiamy wnioski przed zapisem) albo wsadowo.",
+  "_zrodla": "Skill przetworz-zrodlo. folder: gdzie leżą surowe źródła, tylko do czytania; pusty = źródła tam, gdzie je trzymasz. tryb: wspolnie (omawiamy wnioski przed zapisem) albo wsadowo.",
   "zrodla": {
     "folder": "",
     "tryb": "wspolnie"

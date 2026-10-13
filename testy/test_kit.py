@@ -149,7 +149,7 @@ def main():
         sprawdz("dopasowanie-daily-notes" in out and "Journal/Daily" in out,
                 "dopasowanie: inny układ Obsidiana (Daily Notes) jest wykrywany", out)
 
-        print("# wzorzec LLM Wiki: spis treści, aliasy, pojęcia bez strony, układ")
+        print("# źródła i wiedza: spis treści, aliasy, pojęcia bez strony, układ")
         v3 = os.path.join(tmp, "v3")
         zbuduj_vault(v3, z_konfiguracja=False)
         notatka(v3, "Firmy/Instytut Badań Rynku.md", "# IBR\nFirma od ankiet konsumenckich.\n",

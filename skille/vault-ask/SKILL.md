@@ -36,7 +36,7 @@ fragmentu, a pełny plik otwierasz dopiero, gdy fragment nie wystarczył.
 Odpowiedź była syntezą kilku notatek (porównanie, analiza)? Zaproponuj jednym zdaniem zapis
 jako nową notatkę: dobre odpowiedzi to wiedza, nie historia czatu.
 
-## Spis treści (opcjonalnie, wzorzec LLM Wiki)
+## Spis treści (opcjonalnie)
 
 Jeden plik z listą notatek i opisem w jednym zdaniu, pogrupowany po folderach, bez dziennika
 i notatek obalonych. Na co dzień prowadzi go skill `zapisz` (linia na nową notatkę, bez
