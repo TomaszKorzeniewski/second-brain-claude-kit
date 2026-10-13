@@ -5,6 +5,9 @@ description: "Wyszukiwanie po vaulcie Obsidian z warstwą znaczeniową: BM25 plu
 
 # vault-embed: druga warstwa nad BM25
 
+**Wersja zaawansowana**: wymaga Pythona z pakietami i pobrania modelu (ok. 1,1 GB). Bez tego
+kit działa w pełni, szukanie robi `vault-ask` w trybie podstawowym.
+
 BM25 dopasowuje słowa, embedding dopasowuje znaczenie. **Router, nie fuzja:** zapytanie do
 2 słów idzie w całości do BM25 (nazwy własne, kody, pojedyncze terminy), dłuższe w całości do
 wektora (pytania opisowe, parafrazy). Nadbudowa nad `vault-ask`, nie zamiennik.

@@ -5,7 +5,9 @@ description: "Higiena vaultu Obsidian bez modeli AI: martwe linki, sieroty, niea
 
 # vault-lint: higiena vaultu (raport, bez zmian)
 
-Czysty Python, biblioteka standardowa, zero tokenów na samo sprawdzenie.
+**Wersja zaawansowana, wymaga `python3`** (biblioteka standardowa, nic więcej), zero tokenów na
+samo sprawdzenie. Python nie działa: powiedz to jednym zdaniem i nie przeglądaj vaultu ręcznie,
+bo czytanie wszystkich notatek kosztowałoby więcej, niż ten przegląd jest wart.
 
 ## Jak uruchomić (dla Claude)
 
@@ -31,6 +33,7 @@ Czysty Python, biblioteka standardowa, zero tokenów na samo sprawdzenie.
 | nieaktualne | notatka nieruszana dłużej niż `lint.dni_nieaktualne` (domyślnie 90 dni) |
 | szkice | marker TODO, SZKIC albo „do uzupełnienia” na starcie treści lub w tytule |
 | sprzeczności | ta sama znana liczba opisana różnie w różnych notatkach |
+| pojęcia bez strony | ten sam martwy link w 2+ notatkach: temat wraca, a nie ma strony; propozycja, nie błąd |
 
 Pomija foldery ukryte (`.obsidian`, `.kit`, kopie zapasowe) i `_kwarantanna`.
 

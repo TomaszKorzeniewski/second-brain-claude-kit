@@ -4,8 +4,20 @@ nie do autora kitu. Odpowiadaj w moim języku (domyślnie polski).
 
 ═══════════════════ KONTEKST ═══════════════════
 
-Obok tego promptu leży repo kitu: `skille/` (siedem skilli), `konfiguracja/` (wzór pliku
-konfiguracji), `narzedzia/zbuduj.py` (buduje paczki do instalacji), `CHANGELOG.md`, `VERSION`.
+Obok tego promptu leży repo kitu: `skille/` (osiem skilli), `paczki/` (gotowe zipy do
+instalacji), `konfiguracja/` (wzór pliku konfiguracji), `CHANGELOG.md`, `VERSION`.
+
+DWA POZIOMY. Mów o nich prosto, bez żargonu:
+- PODSTAWA, bez instalowania czegokolwiek: `zapisz`, `vault-hot`, `przetworz-zrodlo` i `vault-ask`
+  w trybie podstawowym. To czyste instrukcje dla Claude, działają w każdej aplikacji. Większości
+  osób to wystarczy.
+- WERSJA ZAAWANSOWANA, tylko gdy działa Python: szybsze wyszukiwanie (BM25 w `vault-ask`,
+  znaczeniowe w `vault-embed`), przegląd higieny (`vault-lint`), pomiar HOT.md (`hot-slim`),
+  przegląd dopasowania (`kit-aktualizacja`, część B). Proponujesz, nigdy nie wymagasz.
+
+PO CO TO WSZYSTKO: vault ma rosnąć z każdą rozmową. Skill `zapisz` sam proponuje zapis jedną
+linijką, gdy pada decyzja, liczba albo działające rozwiązanie. Powiedz to userowi wprost na
+starcie, żeby wiedział, czego się spodziewać i że wystarczy odpowiedzieć „tak”.
 
 Jak kit jest zbudowany, to ważne dla wszystkiego niżej:
 - SKILLE SĄ GENERYCZNE. Nie wpisujesz do nich niczego o mnie i ich nie edytujesz.
@@ -34,8 +46,8 @@ ale go nie nadpisuj.
 ═══════════════════ ZANIM ZACZNIESZ: KTÓRY TRYB ═══════════════════
 
 Sprawdź i powiedz mi wynik:
-- czy widzisz `skille/` z siedmioma podfolderami (zapisz, vault-ask, vault-embed, vault-hot,
-  hot-slim, vault-lint, kit-aktualizacja). Jeśli nie, powiedz wprost: coś jest nie tak z paczką.
+- czy widzisz `skille/` z ośmioma podfolderami (zapisz, vault-ask, vault-embed, vault-hot,
+  hot-slim, vault-lint, kit-aktualizacja, przetworz-zrodlo). Jeśli nie, powiedz wprost: coś jest nie tak z paczką.
 - w jakim folderze pracujesz. To mój ogólny folder roboczy, NIE korzeń vaultu. Vault ma być
   osobnym PODFOLDEREM (np. `obsidian/`), żeby notatki nie mieszały się z kodem i dokumentami.
   Zapytaj, czy tworzymy go tutaj, czy wskazuję istniejący vault.
@@ -44,6 +56,9 @@ Sprawdź i powiedz mi wynik:
   będę używał najczęściej. Zapytaj o każdy: do czego służy (`vault.opis`) i czego nie wolno
   z niego wynosić do innych (`vault.granice`, np. „dane klientów zostają w firmowym”).
 - czy w wybranym vaulcie istnieje `.kit/konfiguracja.json`.
+- czy masz dostęp do terminala i czy działa `python3 --version`. Wynik zapisz w konfiguracji
+  (`instalacja.python`: true albo false). NIE proponuj instalowania Pythona: brak to normalna
+  sytuacja, kit działa wtedy w podstawie.
 - JAK VAULT JEST JUŻ UŁOŻONY. Nie narzucaj swojego układu, dopasuj się do mojego:
   - przejrzyj foldery pierwszego poziomu i policz notatki w każdym,
   - przeczytaj `.obsidian/daily-notes.json` (folder i format notatki dnia) i `.obsidian/templates.json`
@@ -146,7 +161,9 @@ Zapisz: `Jak ze mną pracować.md`
 Tu korzystasz z bloków 2 i 3, żeby dopasować setup do TEJ osoby, a nie instalować wszystkiego
 na wszelki wypadek. Każdą decyzję wpisz od razu do konfiguracji.
 
-**Decyzja 1, zapisz (zawsze).** Podstawa całego workflow. Używam Daily Notes w Obsidianie?
+**Decyzja 1, zapisz (zawsze).** Podstawa całego workflow. Wyjaśnij jednym zdaniem, że skill
+sam zaproponuje zapis po każdym ustalonym wyniku (linijka `💾 Zapisać? ...`) i że można to
+wyłączyć (`zapis.proponuj`). Używam Daily Notes w Obsidianie?
 Zaproponuj ten sam folder i format (jeden plik na dzień zamiast dwóch). Nie używam: zapytaj
 o folder dziennika (domyślnie `Dziennik`) i podfolder na rok. Konfiguracja: `dziennik`.
 
@@ -160,22 +177,42 @@ brakujące. Nie używam: zaproponuj, że każda nowa notatka dostaje na górze `
 `status`, `data`, `tagi`. Starych notatek nie ruszaj. Uzasadnij jednym zdaniem: bez `status` wyszukiwarka nie odróżni
 ustalenia aktualnego od obalonego. Konfiguracja: `frontmatter.wymagany`.
 
-**Decyzja 4, HOT.md (`vault-hot` + `hot-slim`).** Kilka wątków naraz (blok 2): zaproponuj.
+**Decyzja 4, HOT.md (`vault-hot`, plus `hot-slim` tylko przy `instalacja.python` = true).**
+Kilka wątków naraz (blok 2): zaproponuj.
 Jeden wątek: powiedz wprost, że HOT prawdopodobnie nie jest potrzebny, i pomiń (można dodać
 później; `kit-aktualizacja` sam to zasugeruje, jeśli dziennik pokaże kilka sesji dziennie).
 Konfiguracja: `hot.uzywam`.
 
-**Decyzja 5, vault-ask.** Duży vault: zainstaluj w pierwszej kolejności. Mały: wciąż warto
-(darmowy, zero tokenów), bez nacisku.
+**Decyzja 5, vault-ask (zawsze).** Bez Pythona szuka wbudowanym wyszukiwaniem w plikach i czyta
+tylko fragmenty. Z Pythonem dochodzi ranking BM25 (zero tokenów na samo szukanie).
 
-**Decyzja 6, vault-embed.** Domyślnie NIE na start: wymaga Pythona z pakietami i pobrania
-modelu (1,1 GB). Zaproponuj tylko, gdy w bloku 3 padło szukanie po temacie, nie po słowach.
+**Decyzja 6, vault-embed (wersja zaawansowana).** Domyślnie NIE na start: wymaga Pythona
+z pakietami i pobrania modelu (1,1 GB). Zaproponuj tylko, gdy `instalacja.python` = true i w bloku 3
+padło szukanie po temacie, nie po słowach.
 Przy `instalacja.sposob` = `aplikacja` ustaw `wyszukiwanie.katalog_danych` na folder w folderze
 roboczym poza vaultem (np. `.second-brain-kit`): `~/.cache` w piaskownicy Cowork znika.
 
-**Decyzja 7, vault-lint.** Zawsze, jako przegląd raz na tydzień albo dwa, nie codziennie.
+**Decyzja 7, vault-lint (wersja zaawansowana).** Tylko przy `instalacja.python` = true, jako
+przegląd raz na tydzień albo dwa. Bez Pythona pomiń bez komentarza.
 
-**Decyzja 8, aktualizacje kitu.** Zapytaj, jak chcę dostawać nowe wersje. Nic nie instaluje
+**Decyzja 8, źródła i spis treści.** Czytam artykuły, PDF-y,
+książki, transkrypcje i chcę, żeby wiedza z nich się kumulowała? Zaproponuj `przetworz-zrodlo`:
+źródło zostaje nietknięte, a wiedza trafia do stron o osobach, firmach, pojęciach. Zapytaj, czy
+źródła mają mieć jeden folder (`zrodla.folder`), czy zostają tam, gdzie są. Vault do ok. 250
+notatek: zaproponuj spis treści (`indeks.uzywam`), bo przy pytaniach ogólnych Claude czyta jeden
+plik zamiast kilkunastu. Prowadzi go `zapisz`, linia na nową notatkę, bez skryptu. Masz już
+dużo notatek i działa Python: złóż spis raz skryptem (`vault-ask`, `kod/indeks.py --zapisz`).
+Bez Pythona spis startuje pusty i rośnie z nowymi notatkami. Większy vault: pomiń.
+
+**Decyzja 9, doradztwo układu (tylko przy `instalacja.python` = true, inaczej pomiń).
+POMAGASZ, NIE NARZUCASZ.** Uruchom przegląd skilla
+`kit-aktualizacja` (`kod/przeglad.py --dopasowanie`, lista `sugestie_ukladu`) i pokaż
+**maksymalnie 3** sugestie: każdą z tym, co konkretnie zyskam (trafniejsze wyszukiwanie, mniej
+tokenów, porządek) i ile to pracy. Domyślna odpowiedź to „zostaw”, nie „zrób”. Mój układ może
+mieć powody, których nie widzisz. Odrzucone zapisz w `aktualizacje.pominiete`, żeby nie wracały.
+Nic nie przenoś hurtem: zmiany w notatkach tylko partiami, za zgodą na każdą partię.
+
+**Decyzja 10, aktualizacje kitu.** Zapytaj, jak chcę dostawać nowe wersje. Nic nie instaluje
 się samo w żadnym trybie:
 - `na_zadanie` (domyślnie): sprawdzasz tylko, gdy powiem „sprawdź aktualizacje”,
 - `przypominaj`: jedna linijka na koniec `zapisz` raz na `co_ile_dni` (domyślnie 30),
@@ -189,8 +226,7 @@ potwierdzenie. Konfiguracja: `skille` = lista potwierdzonych.
 ═══════════════════ NA KONIEC: pięć rzeczy ═══════════════════
 
 1. INSTALACJA SKILLI
-   Uruchom `python3 narzedzia/zbuduj.py` (buduje `paczki/<skill>.zip`). Potem zależnie od
-   `instalacja.sposob`:
+   Gotowe paczki leżą w `paczki/<skill>.zip`, nic nie budujesz. Zależnie od `instalacja.sposob`:
    - `aplikacja`: podaj ścieżki do zipów i dokładne kroki: Settings, Capabilities, Skills,
      Upload skill, wskaż zip. Jeden zip na raz. Tego nie zrobisz za mnie.
    - `claude-code`: za moją zgodą skopiuj `skille/<nazwa>/` do `~/.claude/skills/`.
@@ -218,6 +254,7 @@ potwierdzenie. Konfiguracja: `skille` = lista potwierdzonych.
    - które skille zainstalować i po co,
    - ustawienia do sprawdzenia w aplikacji (Memory, tryb ładowania narzędzi),
    - jedno zadanie na rozgrzewkę, np. „powiedz «zapisz» i zobacz, co się stanie”,
+   - że na linijkę `💾 Zapisać? ...` wystarczy odpowiedzieć „tak”: tak rośnie baza wiedzy,
    - że do tej rozmowy można wrócić: wklejenie tego promptu drugi raz otwiera menu (tryb C).
 
 ═══════════════════ CZEGO NIE ROBIĆ ═══════════════════

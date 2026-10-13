@@ -4,6 +4,73 @@ Każda zmiana ma własny wpis, żeby dało się ją wybrać albo pominąć osobn
 `kit-aktualizacja` czyta ten plik). Pola `id`, `dotyczy`, `zysk`, `decyzja`, `migracja` są
 czytane przez skrypt, więc trzymaj ich format. Najnowsza wersja na górze.
 
+## 2.2.0 (2026-10-12)
+
+### Zapis proponowany po każdym wyniku
+- id: 2.2.0-propozycja-zapisu
+- dotyczy: zapisz
+- zysk: Claude sam proponuje zapis jedną linijką, gdy pada decyzja, liczba albo działające rozwiązanie, więc vault rośnie z każdą rozmową, a nie tylko wtedy, gdy pamiętasz o „zapisz”; na „tak” robi mikrozapis do jednej notatki
+- decyzja: nie
+- migracja: klucz `zapis.proponuj` = true w konfiguracji; stary `zapis.procent_kontekstu` można usunąć, nie jest już czytany
+
+### Kit działa bez Pythona
+- id: 2.2.0-bez-skryptow
+- dotyczy: wszystkie
+- zysk: podstawa (zapisz, vault-hot, przetworz-zrodlo, vault-ask) to same instrukcje, nic nie trzeba instalować; gotowe paczki leżą w `paczki/`; skrypty zostają jako wersja zaawansowana dla chętnych
+- decyzja: nie
+- migracja: klucz `instalacja.python` (true, jeśli działa `python3`)
+
+### Spis treści prowadzony przy zapisie, bez skryptu
+- id: 2.2.0-spis-bez-skryptu
+- dotyczy: zapisz, przetworz-zrodlo, vault-ask
+- zysk: nowa notatka od razu dostaje linię w spisie treści, bez odpalania skryptu; skrypt `indeks.py` składa spis od zera tylko przy dużym vaultcie
+- decyzja: nie
+- migracja: nie
+
+## 2.1.0 (2026-09-25)
+
+### Przetwarzanie źródeł do stron wiedzy
+- id: 2.1.0-przetworz-zrodlo
+- dotyczy: przetworz-zrodlo
+- zysk: artykuł, PDF albo transkrypcja raz przetworzone zasilają strony o osobach, firmach i pojęciach, więc wiedza się kumuluje, zamiast być szukana od nowa przy każdym pytaniu
+- decyzja: tak: czy źródła mają mieć jeden folder, tryb wspólny albo wsadowy
+- migracja: klucz `zrodla` w konfiguracji; zainstaluj skill `przetworz-zrodlo`
+
+### Spis treści składany skryptem
+- id: 2.1.0-indeks
+- dotyczy: vault-ask, zapisz
+- zysk: przy pytaniach ogólnych Claude czyta jeden plik zamiast kilkunastu, a utrzymanie spisu kosztuje zero tokenów (opłaca się do ok. 250 notatek)
+- decyzja: tak: czy chcesz spis treści
+- migracja: klucz `indeks` w konfiguracji; `indeks.py --zapisz` raz, potem odświeża `zapisz`
+
+### Doradztwo układu vaultu, bez przymusu
+- id: 2.1.0-doradztwo-ukladu
+- dotyczy: kit-aktualizacja
+- zysk: podpowiedzi pod wyszukiwanie, embedding i tokeny (nagłówki w długich notatkach, podział bardzo długich, jedno miejsce na źródła, folder załączników); każdą można odrzucić na stałe
+- decyzja: nie
+- migracja: nie
+
+### Aliasy i opis w wyszukiwaniu
+- id: 2.1.0-aliasy
+- dotyczy: vault-ask, vault-embed
+- zysk: notatka trafia też po skrócie, tłumaczeniu albo starej nazwie z pola `aliases`, a pole `opis` wzmacnia trafienie
+- decyzja: nie
+- migracja: nie
+
+### Pojęcia bez własnej strony w przeglądzie higieny
+- id: 2.1.0-lint-pojecia
+- dotyczy: vault-lint
+- zysk: temat linkowany z kilku notatek, a bez własnej strony, wychodzi jako propozycja nowej notatki
+- decyzja: nie
+- migracja: nie
+
+### Ochrona przejrzanych notatek, odpowiedzi wracają do vaultu, log do grepowania
+- id: 2.1.0-sprawdzone-log
+- dotyczy: zapisz, vault-ask
+- zysk: notatka ze `sprawdzone: true` nie jest przepisywana, synteza z rozmowy trafia do vaultu zamiast przepaść w czacie, a historię sesji wyciąga jedno `grep "^## \["`
+- decyzja: nie
+- migracja: nie
+
 ## 2.0.0 (2026-09-25)
 
 ### Twoje dopasowanie w jednym pliku, osobno od skilli

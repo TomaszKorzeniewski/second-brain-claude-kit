@@ -73,6 +73,9 @@ WAGI_TYPOW = {
     "brief": 1.0,
     "dane": 1.0,
     "log": 0.5,
+    # Strona źródła (skill przetworz-zrodlo) to streszczenie cudzego materiału; wnioski żyją
+    # na stronach wiedzy, więc przy remisie mają wygrać one. Wartość przyjęta, niezmierzona.
+    "zrodlo": 0.8,
 }
 # Waga wg pola `status`. `obalone` nie jest wazone, tylko odfiltrowane w calosci
 # (patrz load_chunks i hybryda.Indeks.buduj), ustalenie odwolane nie ma prawa
@@ -139,17 +142,43 @@ def waga_folderu(rel):
 
 
 def pola_frontmattera(text):
-    """Zwraca `typ` i `status` z frontmattera. Puste, gdy notatka go nie ma."""
+    """Zwraca `typ`, `status`, `opis` i `aliases` z frontmattera. Puste, gdy notatka go nie ma.
+
+    `aliases` to natywne pole Obsidiana (inne nazwy tej samej rzeczy: skrót, tłumaczenie,
+    stara nazwa). Wchodzi do wyszukiwania jak nazwa pliku, bo pytanie często używa właśnie
+    aliasu. Obsługuje zapis w linii (`aliases: [a, b]`) i listę pod spodem (`- a`)."""
     if not text.startswith("---"):
         return {}
     koniec = text.find("\n---", 3)
     if koniec == -1:
         return {}
-    pola = {}
+    pola, lista = {}, None
     for linia in text[4:koniec].splitlines():
         m = re.match(r"^(typ|status):\s*(\S+)", linia)
         if m:
             pola[m.group(1)] = m.group(2).strip()
+            lista = None
+            continue
+        m = re.match(r"^opis:\s*(.+)", linia)
+        if m:
+            pola["opis"] = m.group(1).strip().strip("\"'")
+            lista = None
+            continue
+        m = re.match(r"^(aliases|aliasy):\s*(.*)", linia)
+        if m:
+            wartosc = m.group(2).strip()
+            if wartosc.startswith("["):
+                pola["aliases"] = [a.strip().strip("\"'") for a in wartosc.strip("[]").split(",") if a.strip()]
+                lista = None
+            else:
+                pola["aliases"] = [wartosc.strip("\"'")] if wartosc else []
+                lista = pola["aliases"]
+            continue
+        m = re.match(r"^\s+-\s+(.+)", linia)
+        if m and lista is not None:
+            lista.append(m.group(1).strip().strip("\"'"))
+            continue
+        lista = None
     return pola
 
 
@@ -230,9 +259,11 @@ def load_chunks(vault, folder=None):
                 # ale nie ma prawa wyjsc jako odpowiedz.
                 continue
             nazwa = fn[:-3]
+            # Aliasy i opis działają jak druga nazwa pliku: wzmacniają trafienie w każdej sekcji.
+            nazwa = " ".join([nazwa] + meta.get("aliases", []) + [meta.get("opis", "")])
             waga = waga_notatki(rel, meta)
             for head, body in split_sections(txt, full):
-                toks = tokenize_z_prefiksami(head + " " + body)
+                toks = tokenize_z_prefiksami(head + " " + body + " " + nazwa)
                 if toks:
                     chunks.append(
                         {
