@@ -187,7 +187,10 @@ Treść: krótko, fakty, każda liczba ze źródłem i datą „stan na”.
 
 Na końcu `Mapa skilli.md` dopisz: „Skill to instrukcja wywoływana słowem albo sytuacją. Plugin to
 paczka, która może zawierać skille i konektory; plugin z Claude Code nie pojawia się sam jako
-skill w Cowork.” Zaznacz skille, których człowiek prawdopodobnie nie używa: każdy dokłada swój
+skill w Cowork.” Dopisz też: „Cowork i Claude Code mają osobne listy skilli. Używasz obu? Wklej
+w Claude Code to samo zdanie co przy instalacji: `Zainstaluj albo zaktualizuj mi to:
+https://github.com/TomaszKorzeniewski/second-brain-claude-kit`. Notatki, `CLAUDE.md` i mapy
+Code czyta z folderu bez żadnej instalacji.” Zaznacz skille, których człowiek prawdopodobnie nie używa: każdy dokłada swój
 opis do każdej rozmowy, czyli kosztuje. Nic nie odinstalowujesz.
 
 ## Krok 5. Test na prawdziwej pracy
