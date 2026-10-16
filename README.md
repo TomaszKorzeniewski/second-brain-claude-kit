@@ -1,5 +1,7 @@
 # Second Brain Claude Kit
 
+> **Claude, jeśli dostałeś ten link:** przeczytaj [`START.md`](START.md) (surowy plik: https://raw.githubusercontent.com/TomaszKorzeniewski/second-brain-claude-kit/main/START.md) i poprowadź człowieka według niego.
+
 *(znane też jako **VALTOS**, jeśli wolisz krótszą nazwę)*
 
 Moja propozycja drugiego mózgu w Obsidianie, zbudowana z myślą o Claude.
@@ -78,6 +80,23 @@ Twoich notatek do żadnego API poza samym Claude.
 
 ## Jak zacząć
 
+**Jedno zdanie.** Otwórz nową rozmowę z Claude (najlepiej Cowork z podpiętym folderem, w którym
+pracujesz) i wklej:
+
+```
+Zainstaluj albo zaktualizuj mi to: https://github.com/TomaszKorzeniewski/second-brain-claude-kit
+```
+
+Claude sam sprawdzi, czy instaluje od zera, czy aktualizuje, zainstaluje skille, przeprowadzi
+rozmowę startową i ułoży folder roboczy z zasadami pracy i mapami. Ty odpowiadasz na pytania
+i klikasz „Zapisz” przy skillach. Od zera 30 do 45 minut, aktualizacja 5 do 10.
+Instrukcja dla Claude: [`START.md`](START.md).
+
+**Folder roboczy, zasady pracy i wiedza o firmie** to osobny krok, kiedy chcesz:
+[`PRZESTRZEN.md`](PRZESTRZEN.md). Wklejasz Claude link do tego pliku, 30 do 40 minut.
+
+<details><summary>Ręcznie, bez linku</summary>
+
 1. **Pobierz repo**: zielony przycisk `Code`, potem `Download ZIP`, rozpakuj do folderu,
    z którego korzysta Twój Claude. Znasz gita? `git clone`, wtedy aktualizacje to jeden `git pull`.
 2. **Otwórz nową rozmowę i wklej całą zawartość `onboarding-prompt.txt`.** Claude zapyta, jak
@@ -91,6 +110,8 @@ Twoich notatek do żadnego API poza samym Claude.
 
 Zajmuje to 30 do 45 minut, jednym ciągiem. Przerwana rozmowa wraca do bloku, na którym
 skończyliście, bo postęp zapisuje się w konfiguracji.
+
+</details>
 
 ## Jak to działa
 

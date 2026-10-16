@@ -4,6 +4,22 @@ Każda zmiana ma własny wpis, żeby dało się ją wybrać albo pominąć osobn
 `kit-aktualizacja` czyta ten plik). Pola `id`, `dotyczy`, `zysk`, `decyzja`, `migracja` są
 czytane przez skrypt, więc trzymaj ich format. Najnowsza wersja na górze.
 
+## 2.3.0 (2026-10-16)
+
+### Instalacja i aktualizacja z jednego linku
+- id: 2.3.0-start-z-linku
+- dotyczy: wszystkie
+- zysk: wklejasz Claude link do repo, a on sam rozpoznaje, czy instaluje od zera, czy aktualizuje, wgrywa skille (karta do kliknięcia, terminal albo linki do pobrania) i wykonuje migracje; nie pobierasz niczego ręcznie
+- decyzja: nie
+- migracja: nie
+
+### Folder roboczy, zasady pracy i mapy
+- id: 2.3.0-folder-i-zasady
+- dotyczy: wszystkie
+- zysk: Claude układa folder wejście, praca, wyjście, pisze z Tobą krótkie zasady pracy do `CLAUDE.md`, zakłada notatki o Twoich obszarach, osobach i procesach oraz mapę folderu i skilli widoczne w Obsidianie; zawsze wiesz, gdzie leży wynik, odpowiedzi są krótsze, a Claude zaczyna od tego, co już ustalone
+- decyzja: tak: czy układać przestrzeń (osobno: wklej Claude link do `PRZESTRZEN.md`)
+- migracja: nie
+
 ## 2.2.0 (2026-10-12)
 
 ### Zapis proponowany po każdym wyniku

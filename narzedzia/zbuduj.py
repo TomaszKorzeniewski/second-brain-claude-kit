@@ -37,7 +37,7 @@ ZAKAZANE = [
     (re.compile(r"[A-Z]:\\\\Users\\\\", re.IGNORECASE), "ścieżka Windows konkretnego użytkownika"),
     (re.compile(r"/home/[a-z]"), "ścieżka Linux konkretnego użytkownika"),
     (re.compile(r"/sessions/[a-z0-9-]+/mnt"), "ścieżka konkretnej sesji Cowork"),
-    (re.compile("[—–]"), "długi myślnik albo półpauza (reguła stylu kitu)"),
+    (re.compile("[\u2014\u2013]"), "długi myślnik albo półpauza (reguła stylu kitu)"),
 ]
 
 
@@ -62,7 +62,7 @@ def pliki_do_sprawdzenia():
             for f in files:
                 if f.endswith((".md", ".py", ".json", ".txt")):
                     yield os.path.join(root, f)
-    for f in ("README.md", "CHANGELOG.md", "onboarding-prompt.txt"):
+    for f in ("README.md", "CHANGELOG.md", "onboarding-prompt.txt", "START.md", "PRZESTRZEN.md"):
         p = os.path.join(KORZEN, f)
         if os.path.exists(p):
             yield p
